@@ -1,3 +1,7 @@
-This is the Trinity 2013 (Theseus) Robot code repository.
+This is the CS6233 Final Project code repository.
+The intent of this project is to implement a simplified round-robbin
+scheduler and task switcher, and do so on a hardware platform
+(STM32 F3 ARM processor - In the instance of this project, platform is
+an STM32F3DISCOVERY board).
 
-- A.G, Feb. 2013
+- A.G, May 2013

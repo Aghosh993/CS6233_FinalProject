@@ -88,7 +88,8 @@
  * Debug port information: Baud Rate=115200, 8n1 UART (TTL pins PA9, PA10)
  * 							PA9 = TX, PA10 = RX (W/respect to STM32 device)
  *
- * Purpose: Trinity 2013 (Theseus) Primary code development tree
+ * Purpose: CS6233 Final Project (Implementation of a simple round-robin scheduler and task switcher
+ * 			using the STM32 SysTick interrupt)
  *
  */
 
@@ -163,131 +164,8 @@ int main(void)
 
 	UART1_init(); // Debug bridge
 
-	state = ST_READY;
+	while(true);
 
-	LED_MATRIX_ISR_init();
-
-	trinity2013_waitForStart();
-
-	state = ST_WANDER;
-
-	// Initialize ADC data buffers to 0;
-
-	adcData[0] = 0;
-	adcData[1] = 0;
-
-	uint8_t iter = 0;
-	for(iter=0; iter < 7; ++iter)
-	{
-		adc2_data[iter] = 0;
-	}
-
-	adc3_awd1 = 0;
-	adc3_awd2 = 0;
-
-	count = 0;
-	stage = 0;
-
-	/*
-	 * Initialize global encoder data structure for left and right encoders,
-	 * and set position/speed targets as necessary:
-	 */
-
-	init_encoder_struct(&left_enc);
-	init_encoder_struct(&right_enc);
-
-	// Initialize PWM outputs 1 and 2 at 5.0 kHz duty frequency:
-
-	brake_pins_init();
-	pwm_out1_init(2000);
-	pwm_out2_init(2000);
-
-	pwm_out3_init(50);
-
-	// Initialize hardware quadrature encoder input interfaces:
-
-	TIM8_init_encoder();
-	TIM4_init_encoder();
-
-	// Initialize ADC, encoder update, IMU update and LED matrix interrupts:
-
-	new_data = 0;
-	adc2_new_data = 0;
-
-	// Initialize ADC1 DMA:
-	adc1_init_DMA();
-
-	// Initialize ADC2 DMA:
-	adc2_init_DMA();
-
-	//	battery_watchdog_init();
-
-	encoder_update_ISR_init();	//Update the state of the two encoders (left/right)
-
-	// Ping Sensor Init:
-
-	ping_pin_init();
-	timer2_timebase_init();
-	imu_update_ISR_init();
-
-	// Encoder comparator init for noise debounce:
-	comp_init();
-
-	adcval = 0;
-
-	drive_cmd = 0.0f;
-	err = 0.0f;
-	last_err = 0.0f;
-	diff_err = 0.0f;
-	rt = 0.0f;
-	d_front = 1.0f;
-	integral = 0.0f;
-
-	int uv_avgBuf1 = 0;
-	int uv_avgBuf2 = 0;
-	int uv_iter = 0;
-
-	float uv1_avg, uv2_avg;
-
-	LED_MATRIX_ISR_init();		//Hand out some eye candy while we're at it...
-	leds_on = 0;
-
-	while(true)
-	{
-		printf("%4d %4d %4d\n\r", (int)adcData[0] , (int)adc2_data[2], ((int)adcData[0] - (int)adc2_data[2]));
-//		printf("%d %1.3f \n\r", (int)adc2_data[3], d_front);
-//		printf("Time elapsed since start: %1.3f \n\r", match_time_counter);
-		if(((adc2_data[2] > UV_THRESHOLD || adcData[0] > UV_THRESHOLD)) && state == ST_WANDER) //500
-		{
-			for(uv_iter=0; uv_iter<UV_NUMSAMPLES; ++uv_iter)
-			{
-				uv_avgBuf1 += (int)adcData[0];
-				uv_avgBuf2 += (int)adc2_data[2];
-			}
-			uv1_avg = (float)uv_avgBuf1/(float)UV_NUMSAMPLES;
-			uv2_avg = (float)uv_avgBuf2/(float)UV_NUMSAMPLES;
-
-			if(uv1_avg > (float)UV_THRESHOLD || uv2_avg > (float)UV_THRESHOLD)
-			{
-				state = ST_HOMING;
-			}
-
-		}
-		else if (state == ST_FIREFIGHT)
-		{
-			pwm1_output(0.5);
-			pwm2_output(0.5);
-			int jk = 0;
-			for(jk=0;jk<1250000;++jk)
-			{
-				pwm3_output(0.06f);
-			}
-			pwm3_output(0.1f);
-			t_firefight_start = match_time_counter;
-			state = ST_CANDLE_BLOWOUT;
-		}
-
-	}
 	return 0; // We should never manage to get here...
 }
 
