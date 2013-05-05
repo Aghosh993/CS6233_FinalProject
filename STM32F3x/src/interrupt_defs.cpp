@@ -10,7 +10,6 @@
 
 #include "encoder.h"
 
-//#include <stdio.h>
 #include <math.h>
 
 // ISR definitions need to go here, to avoid C++ name-mangling
@@ -124,30 +123,6 @@ void update_pid(void);
 			match_time_counter += (float)DT_ENCODER/(float)1000; // Increment main match time counter by DT_ENCODER ms
 		}
 
-		/*
-		else if(right_enc.m == MODE_SPEED)
-		{
-			error = right_enc.speed - right_enc.speed_target;
-
-			right_out = ((float)error * (float)k_p_s);// + ((float)k_d_s * (float)(error - right_enc.last_speed_error)/(float)((float)DT_ENCODER/(float)1000));
-//			right_out = (right_out > 100) ? 100 : ((right_out < -100) ? -100 : right_out);
-			right_enc.vel_cmd += right_out;
-			if(right_enc.vel_cmd > 1)
-			{
-				right_enc.vel_cmd = 1;
-			}
-
-			else if(right_enc.vel_cmd < 0)
-			{
-				right_enc.vel_cmd = 0;
-			}
-
-//			pwm1_output((float)1.0-right_enc.vel_cmd);
-			pwm1_output(0.50f);
-
-			right_enc.last_speed_error = error;
-		}
-		*/
 	}
 
 	void TIM1_TRG_COM_TIM17_IRQHandler(void)
@@ -261,22 +236,6 @@ void update_pid(void);
 			{
 				led_iter = 0;
 			}
-			/*
-			if(led_iter == 3)
-			{
-				led_iter = 0;
-				if(leds_on == 0)
-				{
-					GPIO_Write(GPIOE, 0); // All LED's
-				}
-				else
-				{
-					GPIO_Write(GPIOE, led_matrix[6] | led_matrix[0] | led_matrix[1] | led_matrix[2] | led_matrix[3]
-		                                            | led_matrix[4] | led_matrix[5]); // All LED's
-				}
-				leds_on = (leds_on == 1) ? leds_on = 0 : leds_on = 1;
-			}
-			*/
 		}
 	}
 	void ADC1_2_IRQHandler(void)
@@ -520,16 +479,26 @@ void update_pid(void);
 					state = ST_DONE;
 				}
 			}
-//			else if(match_time_counter - t_firefight_start > FIREFIGHT_TIMEOUT)
-//			{
-
-//			}
 		}
 		if(state == ST_WANDER || state == ST_HOMING || state == ST_CANDLE_BLOWOUT) {
 		pwm1_output(left);
 		pwm2_output(right);
 		last_err = err;
 		}
+	}
+
+	void PendSV_Handler(void)
+	{
+
+		SCB->ICSR |= (1<<27);
+
+	}
+
+	void SysTick_Handler(void)
+	{
+
+		SCB->ICSR |= (1<<28);
+
 	}
 
 }

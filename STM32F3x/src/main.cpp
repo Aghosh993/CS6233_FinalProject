@@ -164,6 +164,8 @@ int main(void)
 
 	UART1_init(); // Debug bridge
 
+	SysTick_Config(1000);
+
 	while(true);
 
 	return 0; // We should never manage to get here...
