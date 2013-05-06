@@ -10,6 +10,8 @@
 
 #include "encoder.h"
 
+#include "os.h"
+
 #include <math.h>
 
 // ISR definitions need to go here, to avoid C++ name-mangling
@@ -44,6 +46,13 @@ extern int state;
 
 extern int leds_on;
 extern float match_time_counter, t_firefight_start;
+
+
+////// CS6233 stuff:
+
+extern uint32_t msp_res;
+extern int current_process;
+extern process_block process_list[MAX_NUM_PROCESSES];
 
 void update_pid(void);
 
@@ -487,18 +496,27 @@ void update_pid(void);
 		}
 	}
 
+	void SVC_Handler(void)
+	{
+//		msp_res = read_current_msp_val();
+//		while(1);
+		uint32_t val;
+		asm volatile ("mrs r0, MSP\n\t");
+		asm ("mov %[output], r0" : [output] "=r" (val));
+		msp_res = val;
+	}
+
 	void PendSV_Handler(void)
 	{
 
 		SCB->ICSR |= (1<<27);
-
+		asm volatile ("svc 1");	// To kick us into SVC handler
 	}
 
 	void SysTick_Handler(void)
 	{
-
-		SCB->ICSR |= (1<<28);
-
+		asm volatile ("svc 1");
+//		SCB->ICSR |= (1<<28); // To kick us into PendSV handler
 	}
 
 }

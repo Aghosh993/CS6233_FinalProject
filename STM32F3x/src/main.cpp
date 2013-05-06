@@ -158,13 +158,37 @@ int leds_on;
 
 // Initialize all encoder data structures to zero:
 
+int current_process;
+process_block process_list[MAX_NUM_PROCESSES];
+
+uint32_t msp_res;
+process_block pList;
+
+int task1_iter, task2_iter;
+
+void task1(void)
+{
+	++task1_iter;
+}
+
+void task2(void)
+{
+	++task2_iter;
+}
+
 int main(void)
 {
 	SystemInit(); // Set up clocks/PLL/et. al
 
 	UART1_init(); // Debug bridge
 
-	SysTick_Config(1000);
+	task1_iter = 0;
+	task2_iter = 0;
+
+	process_list[0].taskPointer = (void*)task1;
+	process_list[1].taskPointer = (void*)task2;
+
+	OS_init(&pList);
 
 	while(true);
 

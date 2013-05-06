@@ -31,4 +31,6 @@
 #include "stm32f30x_tim.h"
 #include "stm32f30x_usart.h"
 
+#include "os.h"
+
 #endif /* COMMON_HEADERS_H_ */

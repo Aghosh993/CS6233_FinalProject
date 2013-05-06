@@ -16,13 +16,18 @@
   16              		.text
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
-  19              		.align	2
-  20              		.global	_Z13pwm_out1_initt
-  21              		.thumb
-  22              		.thumb_func
-  24              	_Z13pwm_out1_initt:
-  25              	.LFB111:
-  26              		.file 1 "../src/pwm.cpp"
+  19              		.bss
+  20              		.align	2
+  21              	_ZL5stack:
+  22 0000 00000000 		.space	4
+  23              		.text
+  24              		.align	2
+  25              		.global	_Z13pwm_out1_initt
+  26              		.thumb
+  27              		.thumb_func
+  29              	_Z13pwm_out1_initt:
+  30              	.LFB111:
+  31              		.file 1 "../src/pwm.cpp"
    1:../src/pwm.cpp **** /*
    2:../src/pwm.cpp ****  * pwm.cpp
    3:../src/pwm.cpp ****  *
@@ -34,41 +39,41 @@
    9:../src/pwm.cpp **** 
   10:../src/pwm.cpp **** void pwm_out1_init(uint16_t frequency)
   11:../src/pwm.cpp **** {
-  27              		.loc 1 11 0
-  28              		.cfi_startproc
-  29              		@ args = 0, pretend = 0, frame = 56
-  30              		@ frame_needed = 1, uses_anonymous_args = 0
-  31 0000 80B5     		push	{r7, lr}
-  32              	.LCFI0:
-  33              		.cfi_def_cfa_offset 8
-  34              		.cfi_offset 7, -8
-  35              		.cfi_offset 14, -4
-  36 0002 8EB0     		sub	sp, sp, #56
-  37              	.LCFI1:
-  38              		.cfi_def_cfa_offset 64
-  39 0004 00AF     		add	r7, sp, #0
-  40              	.LCFI2:
-  41              		.cfi_def_cfa_register 7
-  42 0006 0346     		mov	r3, r0
-  43 0008 FB80     		strh	r3, [r7, #6]	@ movhi
-  44              	.LBB2:
+  32              		.loc 1 11 0
+  33              		.cfi_startproc
+  34              		@ args = 0, pretend = 0, frame = 56
+  35              		@ frame_needed = 1, uses_anonymous_args = 0
+  36 0000 80B5     		push	{r7, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 7, -8
+  40              		.cfi_offset 14, -4
+  41 0002 8EB0     		sub	sp, sp, #56
+  42              	.LCFI1:
+  43              		.cfi_def_cfa_offset 64
+  44 0004 00AF     		add	r7, sp, #0
+  45              	.LCFI2:
+  46              		.cfi_def_cfa_register 7
+  47 0006 0346     		mov	r3, r0
+  48 0008 FB80     		strh	r3, [r7, #6]	@ movhi
+  49              	.LBB2:
   12:../src/pwm.cpp **** 	int period = 0;
-  45              		.loc 1 12 0
-  46 000a 4FF00003 		mov	r3, #0
-  47 000e 7B63     		str	r3, [r7, #52]
+  50              		.loc 1 12 0
+  51 000a 4FF00003 		mov	r3, #0
+  52 000e 7B63     		str	r3, [r7, #52]
   13:../src/pwm.cpp **** 	int psc = 0;
-  48              		.loc 1 13 0
-  49 0010 4FF00003 		mov	r3, #0
-  50 0014 3B63     		str	r3, [r7, #48]
+  53              		.loc 1 13 0
+  54 0010 4FF00003 		mov	r3, #0
+  55 0014 3B63     		str	r3, [r7, #48]
   14:../src/pwm.cpp **** 	config_pwm_freq((int)frequency, &period, &psc);
-  51              		.loc 1 14 0
-  52 0016 F988     		ldrh	r1, [r7, #6]
-  53 0018 07F13402 		add	r2, r7, #52
-  54 001c 07F13003 		add	r3, r7, #48
-  55 0020 0846     		mov	r0, r1
-  56 0022 1146     		mov	r1, r2
-  57 0024 1A46     		mov	r2, r3
-  58 0026 FFF7FEFF 		bl	_Z15config_pwm_freqiPiS_
+  56              		.loc 1 14 0
+  57 0016 F988     		ldrh	r1, [r7, #6]
+  58 0018 07F13402 		add	r2, r7, #52
+  59 001c 07F13003 		add	r3, r7, #48
+  60 0020 0846     		mov	r0, r1
+  61 0022 1146     		mov	r1, r2
+  62 0024 1A46     		mov	r2, r3
+  63 0026 FFF7FEFF 		bl	_Z15config_pwm_freqiPiS_
   15:../src/pwm.cpp **** 
   16:../src/pwm.cpp **** 
   17:../src/pwm.cpp **** 	TIM_TimeBaseInitTypeDef i;
@@ -76,249 +81,249 @@
   19:../src/pwm.cpp **** 	GPIO_InitTypeDef g;
   20:../src/pwm.cpp **** 
   21:../src/pwm.cpp **** 	i.TIM_CounterMode = TIM_CounterMode_Up;
-  59              		.loc 1 21 0
-  60 002a 4FF00003 		mov	r3, #0
-  61 002e FB84     		strh	r3, [r7, #38]	@ movhi
+  64              		.loc 1 21 0
+  65 002a 4FF00003 		mov	r3, #0
+  66 002e FB84     		strh	r3, [r7, #38]	@ movhi
   22:../src/pwm.cpp **** 	i.TIM_ClockDivision = 0;//clk_div;
-  62              		.loc 1 22 0
-  63 0030 4FF00003 		mov	r3, #0
-  64 0034 BB85     		strh	r3, [r7, #44]	@ movhi
+  67              		.loc 1 22 0
+  68 0030 4FF00003 		mov	r3, #0
+  69 0034 BB85     		strh	r3, [r7, #44]	@ movhi
   23:../src/pwm.cpp **** 	i.TIM_RepetitionCounter = 0;
-  65              		.loc 1 23 0
-  66 0036 4FF00003 		mov	r3, #0
-  67 003a 87F82E30 		strb	r3, [r7, #46]
+  70              		.loc 1 23 0
+  71 0036 4FF00003 		mov	r3, #0
+  72 003a 87F82E30 		strb	r3, [r7, #46]
   24:../src/pwm.cpp **** 	i.TIM_Prescaler = ((uint16_t)psc)-1;
-  68              		.loc 1 24 0
-  69 003e 3B6B     		ldr	r3, [r7, #48]
-  70 0040 9BB2     		uxth	r3, r3
-  71 0042 03F1FF33 		add	r3, r3, #-1
-  72 0046 9BB2     		uxth	r3, r3
-  73 0048 BB84     		strh	r3, [r7, #36]	@ movhi
+  73              		.loc 1 24 0
+  74 003e 3B6B     		ldr	r3, [r7, #48]
+  75 0040 9BB2     		uxth	r3, r3
+  76 0042 03F1FF33 		add	r3, r3, #-1
+  77 0046 9BB2     		uxth	r3, r3
+  78 0048 BB84     		strh	r3, [r7, #36]	@ movhi
   25:../src/pwm.cpp **** 	i.TIM_Period = ((uint16_t)period)-1;
-  74              		.loc 1 25 0
-  75 004a 7B6B     		ldr	r3, [r7, #52]
-  76 004c 9BB2     		uxth	r3, r3
-  77 004e 03F1FF33 		add	r3, r3, #-1
-  78 0052 BB62     		str	r3, [r7, #40]
+  79              		.loc 1 25 0
+  80 004a 7B6B     		ldr	r3, [r7, #52]
+  81 004c 9BB2     		uxth	r3, r3
+  82 004e 03F1FF33 		add	r3, r3, #-1
+  83 0052 BB62     		str	r3, [r7, #40]
   26:../src/pwm.cpp **** 
   27:../src/pwm.cpp **** 	j.TIM_OCMode = TIM_OCMode_PWM1;
-  79              		.loc 1 27 0
-  80 0054 4FF06003 		mov	r3, #96
-  81 0058 3B61     		str	r3, [r7, #16]
+  84              		.loc 1 27 0
+  85 0054 4FF06003 		mov	r3, #96
+  86 0058 3B61     		str	r3, [r7, #16]
   28:../src/pwm.cpp **** 	j.TIM_OutputState = TIM_OutputState_Enable;
-  82              		.loc 1 28 0
-  83 005a 4FF00103 		mov	r3, #1
-  84 005e BB82     		strh	r3, [r7, #20]	@ movhi
+  87              		.loc 1 28 0
+  88 005a 4FF00103 		mov	r3, #1
+  89 005e BB82     		strh	r3, [r7, #20]	@ movhi
   29:../src/pwm.cpp **** 	j.TIM_Pulse = 8191;//25000;
-  85              		.loc 1 29 0
-  86 0060 41F6FF73 		movw	r3, #8191
-  87 0064 BB61     		str	r3, [r7, #24]
+  90              		.loc 1 29 0
+  91 0060 41F6FF73 		movw	r3, #8191
+  92 0064 BB61     		str	r3, [r7, #24]
   30:../src/pwm.cpp **** 	j.TIM_OCPolarity = TIM_OCPolarity_High;
-  88              		.loc 1 30 0
-  89 0066 4FF00003 		mov	r3, #0
-  90 006a BB83     		strh	r3, [r7, #28]	@ movhi
+  93              		.loc 1 30 0
+  94 0066 4FF00003 		mov	r3, #0
+  95 006a BB83     		strh	r3, [r7, #28]	@ movhi
   31:../src/pwm.cpp **** 
   32:../src/pwm.cpp **** 	g.GPIO_Mode = GPIO_Mode_AF;
-  91              		.loc 1 32 0
-  92 006c 4FF00203 		mov	r3, #2
-  93 0070 3B73     		strb	r3, [r7, #12]
+  96              		.loc 1 32 0
+  97 006c 4FF00203 		mov	r3, #2
+  98 0070 3B73     		strb	r3, [r7, #12]
   33:../src/pwm.cpp **** 	g.GPIO_OType = GPIO_OType_PP;
-  94              		.loc 1 33 0
-  95 0072 4FF00003 		mov	r3, #0
-  96 0076 BB73     		strb	r3, [r7, #14]
+  99              		.loc 1 33 0
+ 100 0072 4FF00003 		mov	r3, #0
+ 101 0076 BB73     		strb	r3, [r7, #14]
   34:../src/pwm.cpp **** 	g.GPIO_Pin = GPIO_Pin_4;
-  97              		.loc 1 34 0
-  98 0078 4FF01003 		mov	r3, #16
-  99 007c BB60     		str	r3, [r7, #8]
+ 102              		.loc 1 34 0
+ 103 0078 4FF01003 		mov	r3, #16
+ 104 007c BB60     		str	r3, [r7, #8]
   35:../src/pwm.cpp **** 	g.GPIO_PuPd = GPIO_PuPd_UP;
- 100              		.loc 1 35 0
- 101 007e 4FF00103 		mov	r3, #1
- 102 0082 FB73     		strb	r3, [r7, #15]
+ 105              		.loc 1 35 0
+ 106 007e 4FF00103 		mov	r3, #1
+ 107 0082 FB73     		strb	r3, [r7, #15]
   36:../src/pwm.cpp **** 	g.GPIO_Speed = GPIO_Speed_50MHz;
- 103              		.loc 1 36 0
- 104 0084 4FF00303 		mov	r3, #3
- 105 0088 7B73     		strb	r3, [r7, #13]
+ 108              		.loc 1 36 0
+ 109 0084 4FF00303 		mov	r3, #3
+ 110 0088 7B73     		strb	r3, [r7, #13]
   37:../src/pwm.cpp **** 
   38:../src/pwm.cpp **** 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
- 106              		.loc 1 38 0
- 107 008a 4FF48020 		mov	r0, #262144
- 108 008e 4FF00101 		mov	r1, #1
- 109 0092 FFF7FEFF 		bl	RCC_AHBPeriphClockCmd
+ 111              		.loc 1 38 0
+ 112 008a 4FF48020 		mov	r0, #262144
+ 113 008e 4FF00101 		mov	r1, #1
+ 114 0092 FFF7FEFF 		bl	RCC_AHBPeriphClockCmd
   39:../src/pwm.cpp **** 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_2); // AF2, 10:
- 110              		.loc 1 39 0
- 111 0096 4FF48060 		mov	r0, #1024
- 112 009a C4F60000 		movt	r0, 18432
- 113 009e 4FF00401 		mov	r1, #4
- 114 00a2 4FF00202 		mov	r2, #2
- 115 00a6 FFF7FEFF 		bl	GPIO_PinAFConfig
+ 115              		.loc 1 39 0
+ 116 0096 4FF48060 		mov	r0, #1024
+ 117 009a C4F60000 		movt	r0, 18432
+ 118 009e 4FF00401 		mov	r1, #4
+ 119 00a2 4FF00202 		mov	r2, #2
+ 120 00a6 FFF7FEFF 		bl	GPIO_PinAFConfig
   40:../src/pwm.cpp **** 	GPIO_Init(GPIOB, &g);
- 116              		.loc 1 40 0
- 117 00aa 07F10803 		add	r3, r7, #8
- 118 00ae 4FF48060 		mov	r0, #1024
- 119 00b2 C4F60000 		movt	r0, 18432
- 120 00b6 1946     		mov	r1, r3
- 121 00b8 FFF7FEFF 		bl	GPIO_Init
+ 121              		.loc 1 40 0
+ 122 00aa 07F10803 		add	r3, r7, #8
+ 123 00ae 4FF48060 		mov	r0, #1024
+ 124 00b2 C4F60000 		movt	r0, 18432
+ 125 00b6 1946     		mov	r1, r3
+ 126 00b8 FFF7FEFF 		bl	GPIO_Init
   41:../src/pwm.cpp **** 
   42:../src/pwm.cpp **** 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
- 122              		.loc 1 42 0
- 123 00bc 4FF00200 		mov	r0, #2
- 124 00c0 4FF00101 		mov	r1, #1
- 125 00c4 FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 127              		.loc 1 42 0
+ 128 00bc 4FF00200 		mov	r0, #2
+ 129 00c0 4FF00101 		mov	r1, #1
+ 130 00c4 FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
   43:../src/pwm.cpp **** 	TIM_InternalClockConfig(TIM3);
- 126              		.loc 1 43 0
- 127 00c8 4FF48060 		mov	r0, #1024
- 128 00cc C4F20000 		movt	r0, 16384
- 129 00d0 FFF7FEFF 		bl	TIM_InternalClockConfig
+ 131              		.loc 1 43 0
+ 132 00c8 4FF48060 		mov	r0, #1024
+ 133 00cc C4F20000 		movt	r0, 16384
+ 134 00d0 FFF7FEFF 		bl	TIM_InternalClockConfig
   44:../src/pwm.cpp **** 	TIM_TimeBaseInit(TIM3, &i);
- 130              		.loc 1 44 0
- 131 00d4 07F12403 		add	r3, r7, #36
- 132 00d8 4FF48060 		mov	r0, #1024
- 133 00dc C4F20000 		movt	r0, 16384
- 134 00e0 1946     		mov	r1, r3
- 135 00e2 FFF7FEFF 		bl	TIM_TimeBaseInit
+ 135              		.loc 1 44 0
+ 136 00d4 07F12403 		add	r3, r7, #36
+ 137 00d8 4FF48060 		mov	r0, #1024
+ 138 00dc C4F20000 		movt	r0, 16384
+ 139 00e0 1946     		mov	r1, r3
+ 140 00e2 FFF7FEFF 		bl	TIM_TimeBaseInit
   45:../src/pwm.cpp **** 	TIM_OC1Init(TIM3, &j);
- 136              		.loc 1 45 0
- 137 00e6 07F11003 		add	r3, r7, #16
- 138 00ea 4FF48060 		mov	r0, #1024
- 139 00ee C4F20000 		movt	r0, 16384
- 140 00f2 1946     		mov	r1, r3
- 141 00f4 FFF7FEFF 		bl	TIM_OC1Init
+ 141              		.loc 1 45 0
+ 142 00e6 07F11003 		add	r3, r7, #16
+ 143 00ea 4FF48060 		mov	r0, #1024
+ 144 00ee C4F20000 		movt	r0, 16384
+ 145 00f2 1946     		mov	r1, r3
+ 146 00f4 FFF7FEFF 		bl	TIM_OC1Init
   46:../src/pwm.cpp **** 	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
- 142              		.loc 1 46 0
- 143 00f8 4FF48060 		mov	r0, #1024
- 144 00fc C4F20000 		movt	r0, 16384
- 145 0100 4FF00801 		mov	r1, #8
- 146 0104 FFF7FEFF 		bl	TIM_OC1PreloadConfig
+ 147              		.loc 1 46 0
+ 148 00f8 4FF48060 		mov	r0, #1024
+ 149 00fc C4F20000 		movt	r0, 16384
+ 150 0100 4FF00801 		mov	r1, #8
+ 151 0104 FFF7FEFF 		bl	TIM_OC1PreloadConfig
   47:../src/pwm.cpp **** 	TIM_ARRPreloadConfig(TIM3, ENABLE);
- 147              		.loc 1 47 0
- 148 0108 4FF48060 		mov	r0, #1024
- 149 010c C4F20000 		movt	r0, 16384
- 150 0110 4FF00101 		mov	r1, #1
- 151 0114 FFF7FEFF 		bl	TIM_ARRPreloadConfig
+ 152              		.loc 1 47 0
+ 153 0108 4FF48060 		mov	r0, #1024
+ 154 010c C4F20000 		movt	r0, 16384
+ 155 0110 4FF00101 		mov	r1, #1
+ 156 0114 FFF7FEFF 		bl	TIM_ARRPreloadConfig
   48:../src/pwm.cpp **** 
   49:../src/pwm.cpp **** 	TIM_CCxCmd(TIM3, TIM_Channel_1, TIM_CCx_Enable);
- 152              		.loc 1 49 0
- 153 0118 4FF48060 		mov	r0, #1024
- 154 011c C4F20000 		movt	r0, 16384
- 155 0120 4FF00001 		mov	r1, #0
- 156 0124 4FF00102 		mov	r2, #1
- 157 0128 FFF7FEFF 		bl	TIM_CCxCmd
+ 157              		.loc 1 49 0
+ 158 0118 4FF48060 		mov	r0, #1024
+ 159 011c C4F20000 		movt	r0, 16384
+ 160 0120 4FF00001 		mov	r1, #0
+ 161 0124 4FF00102 		mov	r2, #1
+ 162 0128 FFF7FEFF 		bl	TIM_CCxCmd
   50:../src/pwm.cpp **** 	TIM_Cmd(TIM3, ENABLE);
- 158              		.loc 1 50 0
- 159 012c 4FF48060 		mov	r0, #1024
- 160 0130 C4F20000 		movt	r0, 16384
- 161 0134 4FF00101 		mov	r1, #1
- 162 0138 FFF7FEFF 		bl	TIM_Cmd
+ 163              		.loc 1 50 0
+ 164 012c 4FF48060 		mov	r0, #1024
+ 165 0130 C4F20000 		movt	r0, 16384
+ 166 0134 4FF00101 		mov	r1, #1
+ 167 0138 FFF7FEFF 		bl	TIM_Cmd
   51:../src/pwm.cpp **** 	TIM_GenerateEvent(TIM3, TIM_EventSource_Update);
- 163              		.loc 1 51 0
- 164 013c 4FF48060 		mov	r0, #1024
- 165 0140 C4F20000 		movt	r0, 16384
- 166 0144 4FF00101 		mov	r1, #1
- 167 0148 FFF7FEFF 		bl	TIM_GenerateEvent
- 168              	.LBE2:
+ 168              		.loc 1 51 0
+ 169 013c 4FF48060 		mov	r0, #1024
+ 170 0140 C4F20000 		movt	r0, 16384
+ 171 0144 4FF00101 		mov	r1, #1
+ 172 0148 FFF7FEFF 		bl	TIM_GenerateEvent
+ 173              	.LBE2:
   52:../src/pwm.cpp **** }
- 169              		.loc 1 52 0
- 170 014c 07F13807 		add	r7, r7, #56
- 171 0150 BD46     		mov	sp, r7
- 172 0152 80BD     		pop	{r7, pc}
- 173              		.cfi_endproc
- 174              	.LFE111:
- 176              		.align	2
- 177              		.global	_Z11pwm1_outputf
- 178              		.thumb
- 179              		.thumb_func
- 181              	_Z11pwm1_outputf:
- 182              	.LFB112:
+ 174              		.loc 1 52 0
+ 175 014c 07F13807 		add	r7, r7, #56
+ 176 0150 BD46     		mov	sp, r7
+ 177 0152 80BD     		pop	{r7, pc}
+ 178              		.cfi_endproc
+ 179              	.LFE111:
+ 181              		.align	2
+ 182              		.global	_Z11pwm1_outputf
+ 183              		.thumb
+ 184              		.thumb_func
+ 186              	_Z11pwm1_outputf:
+ 187              	.LFB112:
   53:../src/pwm.cpp **** 
   54:../src/pwm.cpp **** void pwm1_output(float duty)
   55:../src/pwm.cpp **** {
- 183              		.loc 1 55 0
- 184              		.cfi_startproc
- 185              		@ args = 0, pretend = 0, frame = 16
- 186              		@ frame_needed = 1, uses_anonymous_args = 0
- 187 0154 80B5     		push	{r7, lr}
- 188              	.LCFI3:
- 189              		.cfi_def_cfa_offset 8
- 190              		.cfi_offset 7, -8
- 191              		.cfi_offset 14, -4
- 192 0156 84B0     		sub	sp, sp, #16
- 193              	.LCFI4:
- 194              		.cfi_def_cfa_offset 24
- 195 0158 00AF     		add	r7, sp, #0
- 196              	.LCFI5:
- 197              		.cfi_def_cfa_register 7
- 198 015a 7860     		str	r0, [r7, #4]	@ float
- 199              	.LBB3:
+ 188              		.loc 1 55 0
+ 189              		.cfi_startproc
+ 190              		@ args = 0, pretend = 0, frame = 16
+ 191              		@ frame_needed = 1, uses_anonymous_args = 0
+ 192 0154 80B5     		push	{r7, lr}
+ 193              	.LCFI3:
+ 194              		.cfi_def_cfa_offset 8
+ 195              		.cfi_offset 7, -8
+ 196              		.cfi_offset 14, -4
+ 197 0156 84B0     		sub	sp, sp, #16
+ 198              	.LCFI4:
+ 199              		.cfi_def_cfa_offset 24
+ 200 0158 00AF     		add	r7, sp, #0
+ 201              	.LCFI5:
+ 202              		.cfi_def_cfa_register 7
+ 203 015a 7860     		str	r0, [r7, #4]	@ float
+ 204              	.LBB3:
   56:../src/pwm.cpp **** 	uint16_t setval = (uint16_t)((float)TIM3->ARR * duty);
- 200              		.loc 1 56 0
- 201 015c 4FF48063 		mov	r3, #1024
- 202 0160 C4F20003 		movt	r3, 16384
- 203 0164 D3ED0B7A 		flds	s15, [r3, #44]	@ int
- 204 0168 B8EE677A 		fuitos	s14, s15
- 205 016c D7ED017A 		flds	s15, [r7, #4]
- 206 0170 67EE277A 		fmuls	s15, s14, s15
- 207 0174 FCEEE77A 		ftouizs	s15, s15
- 208 0178 17EE903A 		fmrs	r3, s15	@ int
- 209 017c FB81     		strh	r3, [r7, #14]	@ movhi
+ 205              		.loc 1 56 0
+ 206 015c 4FF48063 		mov	r3, #1024
+ 207 0160 C4F20003 		movt	r3, 16384
+ 208 0164 D3ED0B7A 		flds	s15, [r3, #44]	@ int
+ 209 0168 B8EE677A 		fuitos	s14, s15
+ 210 016c D7ED017A 		flds	s15, [r7, #4]
+ 211 0170 67EE277A 		fmuls	s15, s14, s15
+ 212 0174 FCEEE77A 		ftouizs	s15, s15
+ 213 0178 17EE903A 		fmrs	r3, s15	@ int
+ 214 017c FB81     		strh	r3, [r7, #14]	@ movhi
   57:../src/pwm.cpp **** 	TIM_SetCompare1(TIM3, setval);
- 210              		.loc 1 57 0
- 211 017e FB89     		ldrh	r3, [r7, #14]
- 212 0180 4FF48060 		mov	r0, #1024
- 213 0184 C4F20000 		movt	r0, 16384
- 214 0188 1946     		mov	r1, r3
- 215 018a FFF7FEFF 		bl	TIM_SetCompare1
- 216              	.LBE3:
+ 215              		.loc 1 57 0
+ 216 017e FB89     		ldrh	r3, [r7, #14]
+ 217 0180 4FF48060 		mov	r0, #1024
+ 218 0184 C4F20000 		movt	r0, 16384
+ 219 0188 1946     		mov	r1, r3
+ 220 018a FFF7FEFF 		bl	TIM_SetCompare1
+ 221              	.LBE3:
   58:../src/pwm.cpp **** }
- 217              		.loc 1 58 0
- 218 018e 07F11007 		add	r7, r7, #16
- 219 0192 BD46     		mov	sp, r7
- 220 0194 80BD     		pop	{r7, pc}
- 221              		.cfi_endproc
- 222              	.LFE112:
- 224 0196 00BF     		.align	2
- 225              		.global	_Z13pwm_out2_initt
- 226              		.thumb
- 227              		.thumb_func
- 229              	_Z13pwm_out2_initt:
- 230              	.LFB113:
+ 222              		.loc 1 58 0
+ 223 018e 07F11007 		add	r7, r7, #16
+ 224 0192 BD46     		mov	sp, r7
+ 225 0194 80BD     		pop	{r7, pc}
+ 226              		.cfi_endproc
+ 227              	.LFE112:
+ 229 0196 00BF     		.align	2
+ 230              		.global	_Z13pwm_out2_initt
+ 231              		.thumb
+ 232              		.thumb_func
+ 234              	_Z13pwm_out2_initt:
+ 235              	.LFB113:
   59:../src/pwm.cpp **** 
   60:../src/pwm.cpp **** void pwm_out2_init(uint16_t frequency)
   61:../src/pwm.cpp **** {
- 231              		.loc 1 61 0
- 232              		.cfi_startproc
- 233              		@ args = 0, pretend = 0, frame = 56
- 234              		@ frame_needed = 1, uses_anonymous_args = 0
- 235 0198 80B5     		push	{r7, lr}
- 236              	.LCFI6:
- 237              		.cfi_def_cfa_offset 8
- 238              		.cfi_offset 7, -8
- 239              		.cfi_offset 14, -4
- 240 019a 8EB0     		sub	sp, sp, #56
- 241              	.LCFI7:
- 242              		.cfi_def_cfa_offset 64
- 243 019c 00AF     		add	r7, sp, #0
- 244              	.LCFI8:
- 245              		.cfi_def_cfa_register 7
- 246 019e 0346     		mov	r3, r0
- 247 01a0 FB80     		strh	r3, [r7, #6]	@ movhi
- 248              	.LBB4:
+ 236              		.loc 1 61 0
+ 237              		.cfi_startproc
+ 238              		@ args = 0, pretend = 0, frame = 56
+ 239              		@ frame_needed = 1, uses_anonymous_args = 0
+ 240 0198 80B5     		push	{r7, lr}
+ 241              	.LCFI6:
+ 242              		.cfi_def_cfa_offset 8
+ 243              		.cfi_offset 7, -8
+ 244              		.cfi_offset 14, -4
+ 245 019a 8EB0     		sub	sp, sp, #56
+ 246              	.LCFI7:
+ 247              		.cfi_def_cfa_offset 64
+ 248 019c 00AF     		add	r7, sp, #0
+ 249              	.LCFI8:
+ 250              		.cfi_def_cfa_register 7
+ 251 019e 0346     		mov	r3, r0
+ 252 01a0 FB80     		strh	r3, [r7, #6]	@ movhi
+ 253              	.LBB4:
   62:../src/pwm.cpp **** 	int period = 0;
- 249              		.loc 1 62 0
- 250 01a2 4FF00003 		mov	r3, #0
- 251 01a6 7B63     		str	r3, [r7, #52]
+ 254              		.loc 1 62 0
+ 255 01a2 4FF00003 		mov	r3, #0
+ 256 01a6 7B63     		str	r3, [r7, #52]
   63:../src/pwm.cpp **** 	int psc = 0;
- 252              		.loc 1 63 0
- 253 01a8 4FF00003 		mov	r3, #0
- 254 01ac 3B63     		str	r3, [r7, #48]
+ 257              		.loc 1 63 0
+ 258 01a8 4FF00003 		mov	r3, #0
+ 259 01ac 3B63     		str	r3, [r7, #48]
   64:../src/pwm.cpp **** 	config_pwm_freq((int)frequency, &period, &psc);
- 255              		.loc 1 64 0
- 256 01ae F988     		ldrh	r1, [r7, #6]
- 257 01b0 07F13402 		add	r2, r7, #52
- 258 01b4 07F13003 		add	r3, r7, #48
- 259 01b8 0846     		mov	r0, r1
- 260 01ba 1146     		mov	r1, r2
- 261 01bc 1A46     		mov	r2, r3
- 262 01be FFF7FEFF 		bl	_Z15config_pwm_freqiPiS_
+ 260              		.loc 1 64 0
+ 261 01ae F988     		ldrh	r1, [r7, #6]
+ 262 01b0 07F13402 		add	r2, r7, #52
+ 263 01b4 07F13003 		add	r3, r7, #48
+ 264 01b8 0846     		mov	r0, r1
+ 265 01ba 1146     		mov	r1, r2
+ 266 01bc 1A46     		mov	r2, r3
+ 267 01be FFF7FEFF 		bl	_Z15config_pwm_freqiPiS_
   65:../src/pwm.cpp **** 
   66:../src/pwm.cpp **** 
   67:../src/pwm.cpp **** 	TIM_TimeBaseInitTypeDef i;
@@ -326,233 +331,233 @@
   69:../src/pwm.cpp **** 	GPIO_InitTypeDef g;
   70:../src/pwm.cpp **** 
   71:../src/pwm.cpp **** 	i.TIM_CounterMode = TIM_CounterMode_Up;
- 263              		.loc 1 71 0
- 264 01c2 4FF00003 		mov	r3, #0
- 265 01c6 FB84     		strh	r3, [r7, #38]	@ movhi
+ 268              		.loc 1 71 0
+ 269 01c2 4FF00003 		mov	r3, #0
+ 270 01c6 FB84     		strh	r3, [r7, #38]	@ movhi
   72:../src/pwm.cpp **** 	i.TIM_ClockDivision = 0;//clk_div;
- 266              		.loc 1 72 0
- 267 01c8 4FF00003 		mov	r3, #0
- 268 01cc BB85     		strh	r3, [r7, #44]	@ movhi
+ 271              		.loc 1 72 0
+ 272 01c8 4FF00003 		mov	r3, #0
+ 273 01cc BB85     		strh	r3, [r7, #44]	@ movhi
   73:../src/pwm.cpp **** 	i.TIM_RepetitionCounter = 0;
- 269              		.loc 1 73 0
- 270 01ce 4FF00003 		mov	r3, #0
- 271 01d2 87F82E30 		strb	r3, [r7, #46]
+ 274              		.loc 1 73 0
+ 275 01ce 4FF00003 		mov	r3, #0
+ 276 01d2 87F82E30 		strb	r3, [r7, #46]
   74:../src/pwm.cpp **** 	i.TIM_Prescaler = ((uint16_t)psc)-1;
- 272              		.loc 1 74 0
- 273 01d6 3B6B     		ldr	r3, [r7, #48]
- 274 01d8 9BB2     		uxth	r3, r3
- 275 01da 03F1FF33 		add	r3, r3, #-1
- 276 01de 9BB2     		uxth	r3, r3
- 277 01e0 BB84     		strh	r3, [r7, #36]	@ movhi
+ 277              		.loc 1 74 0
+ 278 01d6 3B6B     		ldr	r3, [r7, #48]
+ 279 01d8 9BB2     		uxth	r3, r3
+ 280 01da 03F1FF33 		add	r3, r3, #-1
+ 281 01de 9BB2     		uxth	r3, r3
+ 282 01e0 BB84     		strh	r3, [r7, #36]	@ movhi
   75:../src/pwm.cpp **** 	i.TIM_Period = ((uint16_t)period)-1;
- 278              		.loc 1 75 0
- 279 01e2 7B6B     		ldr	r3, [r7, #52]
- 280 01e4 9BB2     		uxth	r3, r3
- 281 01e6 03F1FF33 		add	r3, r3, #-1
- 282 01ea BB62     		str	r3, [r7, #40]
+ 283              		.loc 1 75 0
+ 284 01e2 7B6B     		ldr	r3, [r7, #52]
+ 285 01e4 9BB2     		uxth	r3, r3
+ 286 01e6 03F1FF33 		add	r3, r3, #-1
+ 287 01ea BB62     		str	r3, [r7, #40]
   76:../src/pwm.cpp **** 
   77:../src/pwm.cpp **** 	j.TIM_OCMode = TIM_OCMode_PWM1;
- 283              		.loc 1 77 0
- 284 01ec 4FF06003 		mov	r3, #96
- 285 01f0 3B61     		str	r3, [r7, #16]
+ 288              		.loc 1 77 0
+ 289 01ec 4FF06003 		mov	r3, #96
+ 290 01f0 3B61     		str	r3, [r7, #16]
   78:../src/pwm.cpp **** 	j.TIM_OutputState = TIM_OutputState_Enable;
- 286              		.loc 1 78 0
- 287 01f2 4FF00103 		mov	r3, #1
- 288 01f6 BB82     		strh	r3, [r7, #20]	@ movhi
+ 291              		.loc 1 78 0
+ 292 01f2 4FF00103 		mov	r3, #1
+ 293 01f6 BB82     		strh	r3, [r7, #20]	@ movhi
   79:../src/pwm.cpp **** 	j.TIM_Pulse = 8191;
- 289              		.loc 1 79 0
- 290 01f8 41F6FF73 		movw	r3, #8191
- 291 01fc BB61     		str	r3, [r7, #24]
+ 294              		.loc 1 79 0
+ 295 01f8 41F6FF73 		movw	r3, #8191
+ 296 01fc BB61     		str	r3, [r7, #24]
   80:../src/pwm.cpp **** 	j.TIM_OCPolarity = TIM_OCPolarity_High;
- 292              		.loc 1 80 0
- 293 01fe 4FF00003 		mov	r3, #0
- 294 0202 BB83     		strh	r3, [r7, #28]	@ movhi
+ 297              		.loc 1 80 0
+ 298 01fe 4FF00003 		mov	r3, #0
+ 299 0202 BB83     		strh	r3, [r7, #28]	@ movhi
   81:../src/pwm.cpp **** 
   82:../src/pwm.cpp **** 	g.GPIO_Mode = GPIO_Mode_AF;
- 295              		.loc 1 82 0
- 296 0204 4FF00203 		mov	r3, #2
- 297 0208 3B73     		strb	r3, [r7, #12]
+ 300              		.loc 1 82 0
+ 301 0204 4FF00203 		mov	r3, #2
+ 302 0208 3B73     		strb	r3, [r7, #12]
   83:../src/pwm.cpp **** 	g.GPIO_OType = GPIO_OType_PP;
- 298              		.loc 1 83 0
- 299 020a 4FF00003 		mov	r3, #0
- 300 020e BB73     		strb	r3, [r7, #14]
+ 303              		.loc 1 83 0
+ 304 020a 4FF00003 		mov	r3, #0
+ 305 020e BB73     		strb	r3, [r7, #14]
   84:../src/pwm.cpp **** 	g.GPIO_Pin = GPIO_Pin_5;
- 301              		.loc 1 84 0
- 302 0210 4FF02003 		mov	r3, #32
- 303 0214 BB60     		str	r3, [r7, #8]
+ 306              		.loc 1 84 0
+ 307 0210 4FF02003 		mov	r3, #32
+ 308 0214 BB60     		str	r3, [r7, #8]
   85:../src/pwm.cpp **** 	g.GPIO_PuPd = GPIO_PuPd_UP;
- 304              		.loc 1 85 0
- 305 0216 4FF00103 		mov	r3, #1
- 306 021a FB73     		strb	r3, [r7, #15]
+ 309              		.loc 1 85 0
+ 310 0216 4FF00103 		mov	r3, #1
+ 311 021a FB73     		strb	r3, [r7, #15]
   86:../src/pwm.cpp **** 	g.GPIO_Speed = GPIO_Speed_50MHz;
- 307              		.loc 1 86 0
- 308 021c 4FF00303 		mov	r3, #3
- 309 0220 7B73     		strb	r3, [r7, #13]
+ 312              		.loc 1 86 0
+ 313 021c 4FF00303 		mov	r3, #3
+ 314 0220 7B73     		strb	r3, [r7, #13]
   87:../src/pwm.cpp **** 
   88:../src/pwm.cpp **** 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
- 310              		.loc 1 88 0
- 311 0222 4FF48020 		mov	r0, #262144
- 312 0226 4FF00101 		mov	r1, #1
- 313 022a FFF7FEFF 		bl	RCC_AHBPeriphClockCmd
+ 315              		.loc 1 88 0
+ 316 0222 4FF48020 		mov	r0, #262144
+ 317 0226 4FF00101 		mov	r1, #1
+ 318 022a FFF7FEFF 		bl	RCC_AHBPeriphClockCmd
   89:../src/pwm.cpp **** 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_2); // AF 2, 10:
- 314              		.loc 1 89 0
- 315 022e 4FF48060 		mov	r0, #1024
- 316 0232 C4F60000 		movt	r0, 18432
- 317 0236 4FF00501 		mov	r1, #5
- 318 023a 4FF00202 		mov	r2, #2
- 319 023e FFF7FEFF 		bl	GPIO_PinAFConfig
+ 319              		.loc 1 89 0
+ 320 022e 4FF48060 		mov	r0, #1024
+ 321 0232 C4F60000 		movt	r0, 18432
+ 322 0236 4FF00501 		mov	r1, #5
+ 323 023a 4FF00202 		mov	r2, #2
+ 324 023e FFF7FEFF 		bl	GPIO_PinAFConfig
   90:../src/pwm.cpp **** 	GPIO_Init(GPIOB, &g);
- 320              		.loc 1 90 0
- 321 0242 07F10803 		add	r3, r7, #8
- 322 0246 4FF48060 		mov	r0, #1024
- 323 024a C4F60000 		movt	r0, 18432
- 324 024e 1946     		mov	r1, r3
- 325 0250 FFF7FEFF 		bl	GPIO_Init
+ 325              		.loc 1 90 0
+ 326 0242 07F10803 		add	r3, r7, #8
+ 327 0246 4FF48060 		mov	r0, #1024
+ 328 024a C4F60000 		movt	r0, 18432
+ 329 024e 1946     		mov	r1, r3
+ 330 0250 FFF7FEFF 		bl	GPIO_Init
   91:../src/pwm.cpp **** 
   92:../src/pwm.cpp **** 
   93:../src/pwm.cpp **** 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
- 326              		.loc 1 93 0
- 327 0254 4FF00200 		mov	r0, #2
- 328 0258 4FF00101 		mov	r1, #1
- 329 025c FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
+ 331              		.loc 1 93 0
+ 332 0254 4FF00200 		mov	r0, #2
+ 333 0258 4FF00101 		mov	r1, #1
+ 334 025c FFF7FEFF 		bl	RCC_APB1PeriphClockCmd
   94:../src/pwm.cpp **** 	TIM_InternalClockConfig(TIM3);
- 330              		.loc 1 94 0
- 331 0260 4FF48060 		mov	r0, #1024
- 332 0264 C4F20000 		movt	r0, 16384
- 333 0268 FFF7FEFF 		bl	TIM_InternalClockConfig
+ 335              		.loc 1 94 0
+ 336 0260 4FF48060 		mov	r0, #1024
+ 337 0264 C4F20000 		movt	r0, 16384
+ 338 0268 FFF7FEFF 		bl	TIM_InternalClockConfig
   95:../src/pwm.cpp **** 	TIM_TimeBaseInit(TIM3, &i);
- 334              		.loc 1 95 0
- 335 026c 07F12403 		add	r3, r7, #36
- 336 0270 4FF48060 		mov	r0, #1024
- 337 0274 C4F20000 		movt	r0, 16384
- 338 0278 1946     		mov	r1, r3
- 339 027a FFF7FEFF 		bl	TIM_TimeBaseInit
+ 339              		.loc 1 95 0
+ 340 026c 07F12403 		add	r3, r7, #36
+ 341 0270 4FF48060 		mov	r0, #1024
+ 342 0274 C4F20000 		movt	r0, 16384
+ 343 0278 1946     		mov	r1, r3
+ 344 027a FFF7FEFF 		bl	TIM_TimeBaseInit
   96:../src/pwm.cpp **** 	TIM_OC2Init(TIM3, &j);
- 340              		.loc 1 96 0
- 341 027e 07F11003 		add	r3, r7, #16
- 342 0282 4FF48060 		mov	r0, #1024
- 343 0286 C4F20000 		movt	r0, 16384
- 344 028a 1946     		mov	r1, r3
- 345 028c FFF7FEFF 		bl	TIM_OC2Init
+ 345              		.loc 1 96 0
+ 346 027e 07F11003 		add	r3, r7, #16
+ 347 0282 4FF48060 		mov	r0, #1024
+ 348 0286 C4F20000 		movt	r0, 16384
+ 349 028a 1946     		mov	r1, r3
+ 350 028c FFF7FEFF 		bl	TIM_OC2Init
   97:../src/pwm.cpp **** 	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);
- 346              		.loc 1 97 0
- 347 0290 4FF48060 		mov	r0, #1024
- 348 0294 C4F20000 		movt	r0, 16384
- 349 0298 4FF00801 		mov	r1, #8
- 350 029c FFF7FEFF 		bl	TIM_OC2PreloadConfig
+ 351              		.loc 1 97 0
+ 352 0290 4FF48060 		mov	r0, #1024
+ 353 0294 C4F20000 		movt	r0, 16384
+ 354 0298 4FF00801 		mov	r1, #8
+ 355 029c FFF7FEFF 		bl	TIM_OC2PreloadConfig
   98:../src/pwm.cpp **** 	TIM_ARRPreloadConfig(TIM3, ENABLE);
- 351              		.loc 1 98 0
- 352 02a0 4FF48060 		mov	r0, #1024
- 353 02a4 C4F20000 		movt	r0, 16384
- 354 02a8 4FF00101 		mov	r1, #1
- 355 02ac FFF7FEFF 		bl	TIM_ARRPreloadConfig
+ 356              		.loc 1 98 0
+ 357 02a0 4FF48060 		mov	r0, #1024
+ 358 02a4 C4F20000 		movt	r0, 16384
+ 359 02a8 4FF00101 		mov	r1, #1
+ 360 02ac FFF7FEFF 		bl	TIM_ARRPreloadConfig
   99:../src/pwm.cpp **** 
  100:../src/pwm.cpp **** 	TIM_CCxCmd(TIM3, TIM_Channel_2, TIM_CCx_Enable);
- 356              		.loc 1 100 0
- 357 02b0 4FF48060 		mov	r0, #1024
- 358 02b4 C4F20000 		movt	r0, 16384
- 359 02b8 4FF00401 		mov	r1, #4
- 360 02bc 4FF00102 		mov	r2, #1
- 361 02c0 FFF7FEFF 		bl	TIM_CCxCmd
+ 361              		.loc 1 100 0
+ 362 02b0 4FF48060 		mov	r0, #1024
+ 363 02b4 C4F20000 		movt	r0, 16384
+ 364 02b8 4FF00401 		mov	r1, #4
+ 365 02bc 4FF00102 		mov	r2, #1
+ 366 02c0 FFF7FEFF 		bl	TIM_CCxCmd
  101:../src/pwm.cpp **** 	TIM_Cmd(TIM3, ENABLE);
- 362              		.loc 1 101 0
- 363 02c4 4FF48060 		mov	r0, #1024
- 364 02c8 C4F20000 		movt	r0, 16384
- 365 02cc 4FF00101 		mov	r1, #1
- 366 02d0 FFF7FEFF 		bl	TIM_Cmd
+ 367              		.loc 1 101 0
+ 368 02c4 4FF48060 		mov	r0, #1024
+ 369 02c8 C4F20000 		movt	r0, 16384
+ 370 02cc 4FF00101 		mov	r1, #1
+ 371 02d0 FFF7FEFF 		bl	TIM_Cmd
  102:../src/pwm.cpp **** 	TIM_GenerateEvent(TIM3, TIM_EventSource_Update);
- 367              		.loc 1 102 0
- 368 02d4 4FF48060 		mov	r0, #1024
- 369 02d8 C4F20000 		movt	r0, 16384
- 370 02dc 4FF00101 		mov	r1, #1
- 371 02e0 FFF7FEFF 		bl	TIM_GenerateEvent
- 372              	.LBE4:
+ 372              		.loc 1 102 0
+ 373 02d4 4FF48060 		mov	r0, #1024
+ 374 02d8 C4F20000 		movt	r0, 16384
+ 375 02dc 4FF00101 		mov	r1, #1
+ 376 02e0 FFF7FEFF 		bl	TIM_GenerateEvent
+ 377              	.LBE4:
  103:../src/pwm.cpp **** }
- 373              		.loc 1 103 0
- 374 02e4 07F13807 		add	r7, r7, #56
- 375 02e8 BD46     		mov	sp, r7
- 376 02ea 80BD     		pop	{r7, pc}
- 377              		.cfi_endproc
- 378              	.LFE113:
- 380              		.align	2
- 381              		.global	_Z11pwm2_outputf
- 382              		.thumb
- 383              		.thumb_func
- 385              	_Z11pwm2_outputf:
- 386              	.LFB114:
+ 378              		.loc 1 103 0
+ 379 02e4 07F13807 		add	r7, r7, #56
+ 380 02e8 BD46     		mov	sp, r7
+ 381 02ea 80BD     		pop	{r7, pc}
+ 382              		.cfi_endproc
+ 383              	.LFE113:
+ 385              		.align	2
+ 386              		.global	_Z11pwm2_outputf
+ 387              		.thumb
+ 388              		.thumb_func
+ 390              	_Z11pwm2_outputf:
+ 391              	.LFB114:
  104:../src/pwm.cpp **** 
  105:../src/pwm.cpp **** void pwm2_output(float duty)
  106:../src/pwm.cpp **** {
- 387              		.loc 1 106 0
- 388              		.cfi_startproc
- 389              		@ args = 0, pretend = 0, frame = 16
- 390              		@ frame_needed = 1, uses_anonymous_args = 0
- 391 02ec 80B5     		push	{r7, lr}
- 392              	.LCFI9:
- 393              		.cfi_def_cfa_offset 8
- 394              		.cfi_offset 7, -8
- 395              		.cfi_offset 14, -4
- 396 02ee 84B0     		sub	sp, sp, #16
- 397              	.LCFI10:
- 398              		.cfi_def_cfa_offset 24
- 399 02f0 00AF     		add	r7, sp, #0
- 400              	.LCFI11:
- 401              		.cfi_def_cfa_register 7
- 402 02f2 7860     		str	r0, [r7, #4]	@ float
- 403              	.LBB5:
+ 392              		.loc 1 106 0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 16
+ 395              		@ frame_needed = 1, uses_anonymous_args = 0
+ 396 02ec 80B5     		push	{r7, lr}
+ 397              	.LCFI9:
+ 398              		.cfi_def_cfa_offset 8
+ 399              		.cfi_offset 7, -8
+ 400              		.cfi_offset 14, -4
+ 401 02ee 84B0     		sub	sp, sp, #16
+ 402              	.LCFI10:
+ 403              		.cfi_def_cfa_offset 24
+ 404 02f0 00AF     		add	r7, sp, #0
+ 405              	.LCFI11:
+ 406              		.cfi_def_cfa_register 7
+ 407 02f2 7860     		str	r0, [r7, #4]	@ float
+ 408              	.LBB5:
  107:../src/pwm.cpp **** 	uint16_t setval = (uint16_t)((float)TIM3->ARR * duty);
- 404              		.loc 1 107 0
- 405 02f4 4FF48063 		mov	r3, #1024
- 406 02f8 C4F20003 		movt	r3, 16384
- 407 02fc D3ED0B7A 		flds	s15, [r3, #44]	@ int
- 408 0300 B8EE677A 		fuitos	s14, s15
- 409 0304 D7ED017A 		flds	s15, [r7, #4]
- 410 0308 67EE277A 		fmuls	s15, s14, s15
- 411 030c FCEEE77A 		ftouizs	s15, s15
- 412 0310 17EE903A 		fmrs	r3, s15	@ int
- 413 0314 FB81     		strh	r3, [r7, #14]	@ movhi
+ 409              		.loc 1 107 0
+ 410 02f4 4FF48063 		mov	r3, #1024
+ 411 02f8 C4F20003 		movt	r3, 16384
+ 412 02fc D3ED0B7A 		flds	s15, [r3, #44]	@ int
+ 413 0300 B8EE677A 		fuitos	s14, s15
+ 414 0304 D7ED017A 		flds	s15, [r7, #4]
+ 415 0308 67EE277A 		fmuls	s15, s14, s15
+ 416 030c FCEEE77A 		ftouizs	s15, s15
+ 417 0310 17EE903A 		fmrs	r3, s15	@ int
+ 418 0314 FB81     		strh	r3, [r7, #14]	@ movhi
  108:../src/pwm.cpp **** 	TIM_SetCompare2(TIM3, setval);
- 414              		.loc 1 108 0
- 415 0316 FB89     		ldrh	r3, [r7, #14]
- 416 0318 4FF48060 		mov	r0, #1024
- 417 031c C4F20000 		movt	r0, 16384
- 418 0320 1946     		mov	r1, r3
- 419 0322 FFF7FEFF 		bl	TIM_SetCompare2
- 420              	.LBE5:
+ 419              		.loc 1 108 0
+ 420 0316 FB89     		ldrh	r3, [r7, #14]
+ 421 0318 4FF48060 		mov	r0, #1024
+ 422 031c C4F20000 		movt	r0, 16384
+ 423 0320 1946     		mov	r1, r3
+ 424 0322 FFF7FEFF 		bl	TIM_SetCompare2
+ 425              	.LBE5:
  109:../src/pwm.cpp **** }
- 421              		.loc 1 109 0
- 422 0326 07F11007 		add	r7, r7, #16
- 423 032a BD46     		mov	sp, r7
- 424 032c 80BD     		pop	{r7, pc}
- 425              		.cfi_endproc
- 426              	.LFE114:
- 428 032e 00BF     		.align	2
- 429              		.global	_Z13pwm_out3_initt
- 430              		.thumb
- 431              		.thumb_func
- 433              	_Z13pwm_out3_initt:
- 434              	.LFB115:
+ 426              		.loc 1 109 0
+ 427 0326 07F11007 		add	r7, r7, #16
+ 428 032a BD46     		mov	sp, r7
+ 429 032c 80BD     		pop	{r7, pc}
+ 430              		.cfi_endproc
+ 431              	.LFE114:
+ 433 032e 00BF     		.align	2
+ 434              		.global	_Z13pwm_out3_initt
+ 435              		.thumb
+ 436              		.thumb_func
+ 438              	_Z13pwm_out3_initt:
+ 439              	.LFB115:
  110:../src/pwm.cpp **** // PE0, TIM16:
  111:../src/pwm.cpp **** void pwm_out3_init(uint16_t frequency)
  112:../src/pwm.cpp **** {
- 435              		.loc 1 112 0
- 436              		.cfi_startproc
- 437              		@ args = 0, pretend = 0, frame = 56
- 438              		@ frame_needed = 1, uses_anonymous_args = 0
- 439 0330 80B5     		push	{r7, lr}
- 440              	.LCFI12:
- 441              		.cfi_def_cfa_offset 8
- 442              		.cfi_offset 7, -8
- 443              		.cfi_offset 14, -4
- 444 0332 8EB0     		sub	sp, sp, #56
- 445              	.LCFI13:
- 446              		.cfi_def_cfa_offset 64
- 447 0334 00AF     		add	r7, sp, #0
- 448              	.LCFI14:
- 449              		.cfi_def_cfa_register 7
- 450 0336 0346     		mov	r3, r0
- 451 0338 FB80     		strh	r3, [r7, #6]	@ movhi
- 452              	.LBB6:
+ 440              		.loc 1 112 0
+ 441              		.cfi_startproc
+ 442              		@ args = 0, pretend = 0, frame = 56
+ 443              		@ frame_needed = 1, uses_anonymous_args = 0
+ 444 0330 80B5     		push	{r7, lr}
+ 445              	.LCFI12:
+ 446              		.cfi_def_cfa_offset 8
+ 447              		.cfi_offset 7, -8
+ 448              		.cfi_offset 14, -4
+ 449 0332 8EB0     		sub	sp, sp, #56
+ 450              	.LCFI13:
+ 451              		.cfi_def_cfa_offset 64
+ 452 0334 00AF     		add	r7, sp, #0
+ 453              	.LCFI14:
+ 454              		.cfi_def_cfa_register 7
+ 455 0336 0346     		mov	r3, r0
+ 456 0338 FB80     		strh	r3, [r7, #6]	@ movhi
+ 457              	.LBB6:
  113:../src/pwm.cpp **** 	/*
  114:../src/pwm.cpp **** 	int period = 0;
  115:../src/pwm.cpp **** 	int psc = 0;
@@ -605,22 +610,22 @@
  162:../src/pwm.cpp **** 	///////////////////////////////////////////////////
  163:../src/pwm.cpp **** 
  164:../src/pwm.cpp **** 	int period = 0;
- 453              		.loc 1 164 0
- 454 033a 4FF00003 		mov	r3, #0
- 455 033e 7B63     		str	r3, [r7, #52]
+ 458              		.loc 1 164 0
+ 459 033a 4FF00003 		mov	r3, #0
+ 460 033e 7B63     		str	r3, [r7, #52]
  165:../src/pwm.cpp **** 	int psc = 0;
- 456              		.loc 1 165 0
- 457 0340 4FF00003 		mov	r3, #0
- 458 0344 3B63     		str	r3, [r7, #48]
+ 461              		.loc 1 165 0
+ 462 0340 4FF00003 		mov	r3, #0
+ 463 0344 3B63     		str	r3, [r7, #48]
  166:../src/pwm.cpp **** 	config_pwm_freq((int)frequency, &period, &psc);
- 459              		.loc 1 166 0
- 460 0346 F988     		ldrh	r1, [r7, #6]
- 461 0348 07F13402 		add	r2, r7, #52
- 462 034c 07F13003 		add	r3, r7, #48
- 463 0350 0846     		mov	r0, r1
- 464 0352 1146     		mov	r1, r2
- 465 0354 1A46     		mov	r2, r3
- 466 0356 FFF7FEFF 		bl	_Z15config_pwm_freqiPiS_
+ 464              		.loc 1 166 0
+ 465 0346 F988     		ldrh	r1, [r7, #6]
+ 466 0348 07F13402 		add	r2, r7, #52
+ 467 034c 07F13003 		add	r3, r7, #48
+ 468 0350 0846     		mov	r0, r1
+ 469 0352 1146     		mov	r1, r2
+ 470 0354 1A46     		mov	r2, r3
+ 471 0356 FFF7FEFF 		bl	_Z15config_pwm_freqiPiS_
  167:../src/pwm.cpp **** 
  168:../src/pwm.cpp **** 
  169:../src/pwm.cpp **** 	TIM_TimeBaseInitTypeDef i;
@@ -628,695 +633,695 @@
  171:../src/pwm.cpp **** 	GPIO_InitTypeDef g;
  172:../src/pwm.cpp **** 
  173:../src/pwm.cpp **** 	i.TIM_CounterMode = TIM_CounterMode_Up;
- 467              		.loc 1 173 0
- 468 035a 4FF00003 		mov	r3, #0
- 469 035e FB84     		strh	r3, [r7, #38]	@ movhi
+ 472              		.loc 1 173 0
+ 473 035a 4FF00003 		mov	r3, #0
+ 474 035e FB84     		strh	r3, [r7, #38]	@ movhi
  174:../src/pwm.cpp **** 	i.TIM_ClockDivision = 0;
- 470              		.loc 1 174 0
- 471 0360 4FF00003 		mov	r3, #0
- 472 0364 BB85     		strh	r3, [r7, #44]	@ movhi
+ 475              		.loc 1 174 0
+ 476 0360 4FF00003 		mov	r3, #0
+ 477 0364 BB85     		strh	r3, [r7, #44]	@ movhi
  175:../src/pwm.cpp **** 	i.TIM_RepetitionCounter = 0;
- 473              		.loc 1 175 0
- 474 0366 4FF00003 		mov	r3, #0
- 475 036a 87F82E30 		strb	r3, [r7, #46]
+ 478              		.loc 1 175 0
+ 479 0366 4FF00003 		mov	r3, #0
+ 480 036a 87F82E30 		strb	r3, [r7, #46]
  176:../src/pwm.cpp **** 	i.TIM_Prescaler = ((uint16_t)psc)-1;
- 476              		.loc 1 176 0
- 477 036e 3B6B     		ldr	r3, [r7, #48]
- 478 0370 9BB2     		uxth	r3, r3
- 479 0372 03F1FF33 		add	r3, r3, #-1
- 480 0376 9BB2     		uxth	r3, r3
- 481 0378 BB84     		strh	r3, [r7, #36]	@ movhi
+ 481              		.loc 1 176 0
+ 482 036e 3B6B     		ldr	r3, [r7, #48]
+ 483 0370 9BB2     		uxth	r3, r3
+ 484 0372 03F1FF33 		add	r3, r3, #-1
+ 485 0376 9BB2     		uxth	r3, r3
+ 486 0378 BB84     		strh	r3, [r7, #36]	@ movhi
  177:../src/pwm.cpp **** 	i.TIM_Period = ((uint16_t)period)-1;
- 482              		.loc 1 177 0
- 483 037a 7B6B     		ldr	r3, [r7, #52]
- 484 037c 9BB2     		uxth	r3, r3
- 485 037e 03F1FF33 		add	r3, r3, #-1
- 486 0382 BB62     		str	r3, [r7, #40]
+ 487              		.loc 1 177 0
+ 488 037a 7B6B     		ldr	r3, [r7, #52]
+ 489 037c 9BB2     		uxth	r3, r3
+ 490 037e 03F1FF33 		add	r3, r3, #-1
+ 491 0382 BB62     		str	r3, [r7, #40]
  178:../src/pwm.cpp **** 
  179:../src/pwm.cpp **** 	j.TIM_OCMode = TIM_OCMode_PWM1;
- 487              		.loc 1 179 0
- 488 0384 4FF06003 		mov	r3, #96
- 489 0388 3B61     		str	r3, [r7, #16]
+ 492              		.loc 1 179 0
+ 493 0384 4FF06003 		mov	r3, #96
+ 494 0388 3B61     		str	r3, [r7, #16]
  180:../src/pwm.cpp **** 	j.TIM_OutputState = TIM_OutputState_Enable;
- 490              		.loc 1 180 0
- 491 038a 4FF00103 		mov	r3, #1
- 492 038e BB82     		strh	r3, [r7, #20]	@ movhi
+ 495              		.loc 1 180 0
+ 496 038a 4FF00103 		mov	r3, #1
+ 497 038e BB82     		strh	r3, [r7, #20]	@ movhi
  181:../src/pwm.cpp **** 	j.TIM_Pulse = 8191;
- 493              		.loc 1 181 0
- 494 0390 41F6FF73 		movw	r3, #8191
- 495 0394 BB61     		str	r3, [r7, #24]
+ 498              		.loc 1 181 0
+ 499 0390 41F6FF73 		movw	r3, #8191
+ 500 0394 BB61     		str	r3, [r7, #24]
  182:../src/pwm.cpp **** 	j.TIM_OCPolarity = TIM_OCPolarity_High;
- 496              		.loc 1 182 0
- 497 0396 4FF00003 		mov	r3, #0
- 498 039a BB83     		strh	r3, [r7, #28]	@ movhi
+ 501              		.loc 1 182 0
+ 502 0396 4FF00003 		mov	r3, #0
+ 503 039a BB83     		strh	r3, [r7, #28]	@ movhi
  183:../src/pwm.cpp **** 
  184:../src/pwm.cpp **** 	// PE0
  185:../src/pwm.cpp **** 
  186:../src/pwm.cpp **** 	g.GPIO_Mode = GPIO_Mode_AF;
- 499              		.loc 1 186 0
- 500 039c 4FF00203 		mov	r3, #2
- 501 03a0 3B73     		strb	r3, [r7, #12]
+ 504              		.loc 1 186 0
+ 505 039c 4FF00203 		mov	r3, #2
+ 506 03a0 3B73     		strb	r3, [r7, #12]
  187:../src/pwm.cpp **** 	g.GPIO_OType = GPIO_OType_PP;
- 502              		.loc 1 187 0
- 503 03a2 4FF00003 		mov	r3, #0
- 504 03a6 BB73     		strb	r3, [r7, #14]
+ 507              		.loc 1 187 0
+ 508 03a2 4FF00003 		mov	r3, #0
+ 509 03a6 BB73     		strb	r3, [r7, #14]
  188:../src/pwm.cpp **** 	g.GPIO_Pin = GPIO_Pin_14;
- 505              		.loc 1 188 0
- 506 03a8 4FF48043 		mov	r3, #16384
- 507 03ac BB60     		str	r3, [r7, #8]
+ 510              		.loc 1 188 0
+ 511 03a8 4FF48043 		mov	r3, #16384
+ 512 03ac BB60     		str	r3, [r7, #8]
  189:../src/pwm.cpp **** 	g.GPIO_PuPd = GPIO_PuPd_NOPULL;
- 508              		.loc 1 189 0
- 509 03ae 4FF00003 		mov	r3, #0
- 510 03b2 FB73     		strb	r3, [r7, #15]
+ 513              		.loc 1 189 0
+ 514 03ae 4FF00003 		mov	r3, #0
+ 515 03b2 FB73     		strb	r3, [r7, #15]
  190:../src/pwm.cpp **** 	g.GPIO_Speed = GPIO_Speed_Level_1;//GPIO_Speed_50MHz;
- 511              		.loc 1 190 0
- 512 03b4 4FF00103 		mov	r3, #1
- 513 03b8 7B73     		strb	r3, [r7, #13]
+ 516              		.loc 1 190 0
+ 517 03b4 4FF00103 		mov	r3, #1
+ 518 03b8 7B73     		strb	r3, [r7, #13]
  191:../src/pwm.cpp **** 
  192:../src/pwm.cpp **** 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE);
- 514              		.loc 1 192 0
- 515 03ba 4FF40010 		mov	r0, #2097152
- 516 03be 4FF00101 		mov	r1, #1
- 517 03c2 FFF7FEFF 		bl	RCC_AHBPeriphClockCmd
+ 519              		.loc 1 192 0
+ 520 03ba 4FF40010 		mov	r0, #2097152
+ 521 03be 4FF00101 		mov	r1, #1
+ 522 03c2 FFF7FEFF 		bl	RCC_AHBPeriphClockCmd
  193:../src/pwm.cpp **** 	GPIO_PinAFConfig(GPIOE, GPIO_PinSource14, GPIO_AF_2); // AF 1, 2, 3, or 9 (TIM15); 1, 4 (TIM16); 1
- 518              		.loc 1 193 0
- 519 03c6 4FF48050 		mov	r0, #4096
- 520 03ca C4F60000 		movt	r0, 18432
- 521 03ce 4FF00E01 		mov	r1, #14
- 522 03d2 4FF00202 		mov	r2, #2
- 523 03d6 FFF7FEFF 		bl	GPIO_PinAFConfig
+ 523              		.loc 1 193 0
+ 524 03c6 4FF48050 		mov	r0, #4096
+ 525 03ca C4F60000 		movt	r0, 18432
+ 526 03ce 4FF00E01 		mov	r1, #14
+ 527 03d2 4FF00202 		mov	r2, #2
+ 528 03d6 FFF7FEFF 		bl	GPIO_PinAFConfig
  194:../src/pwm.cpp **** 	GPIO_Init(GPIOE, &g);
- 524              		.loc 1 194 0
- 525 03da 07F10803 		add	r3, r7, #8
- 526 03de 4FF48050 		mov	r0, #4096
- 527 03e2 C4F60000 		movt	r0, 18432
- 528 03e6 1946     		mov	r1, r3
- 529 03e8 FFF7FEFF 		bl	GPIO_Init
+ 529              		.loc 1 194 0
+ 530 03da 07F10803 		add	r3, r7, #8
+ 531 03de 4FF48050 		mov	r0, #4096
+ 532 03e2 C4F60000 		movt	r0, 18432
+ 533 03e6 1946     		mov	r1, r3
+ 534 03e8 FFF7FEFF 		bl	GPIO_Init
  195:../src/pwm.cpp **** 
  196:../src/pwm.cpp **** 
  197:../src/pwm.cpp **** 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
- 530              		.loc 1 197 0
- 531 03ec 4FF40060 		mov	r0, #2048
- 532 03f0 4FF00101 		mov	r1, #1
- 533 03f4 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 535              		.loc 1 197 0
+ 536 03ec 4FF40060 		mov	r0, #2048
+ 537 03f0 4FF00101 		mov	r1, #1
+ 538 03f4 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
  198:../src/pwm.cpp **** 	TIM_InternalClockConfig(TIM1);
- 534              		.loc 1 198 0
- 535 03f8 4FF43050 		mov	r0, #11264
- 536 03fc C4F20100 		movt	r0, 16385
- 537 0400 FFF7FEFF 		bl	TIM_InternalClockConfig
+ 539              		.loc 1 198 0
+ 540 03f8 4FF43050 		mov	r0, #11264
+ 541 03fc C4F20100 		movt	r0, 16385
+ 542 0400 FFF7FEFF 		bl	TIM_InternalClockConfig
  199:../src/pwm.cpp **** 	TIM_TimeBaseInit(TIM1, &i);
- 538              		.loc 1 199 0
- 539 0404 07F12403 		add	r3, r7, #36
- 540 0408 4FF43050 		mov	r0, #11264
- 541 040c C4F20100 		movt	r0, 16385
- 542 0410 1946     		mov	r1, r3
- 543 0412 FFF7FEFF 		bl	TIM_TimeBaseInit
+ 543              		.loc 1 199 0
+ 544 0404 07F12403 		add	r3, r7, #36
+ 545 0408 4FF43050 		mov	r0, #11264
+ 546 040c C4F20100 		movt	r0, 16385
+ 547 0410 1946     		mov	r1, r3
+ 548 0412 FFF7FEFF 		bl	TIM_TimeBaseInit
  200:../src/pwm.cpp **** 	TIM_OC4Init(TIM1, &j);
- 544              		.loc 1 200 0
- 545 0416 07F11003 		add	r3, r7, #16
- 546 041a 4FF43050 		mov	r0, #11264
- 547 041e C4F20100 		movt	r0, 16385
- 548 0422 1946     		mov	r1, r3
- 549 0424 FFF7FEFF 		bl	TIM_OC4Init
+ 549              		.loc 1 200 0
+ 550 0416 07F11003 		add	r3, r7, #16
+ 551 041a 4FF43050 		mov	r0, #11264
+ 552 041e C4F20100 		movt	r0, 16385
+ 553 0422 1946     		mov	r1, r3
+ 554 0424 FFF7FEFF 		bl	TIM_OC4Init
  201:../src/pwm.cpp **** 	TIM_OC4PreloadConfig(TIM1, TIM_OCPreload_Enable);
- 550              		.loc 1 201 0
- 551 0428 4FF43050 		mov	r0, #11264
- 552 042c C4F20100 		movt	r0, 16385
- 553 0430 4FF00801 		mov	r1, #8
- 554 0434 FFF7FEFF 		bl	TIM_OC4PreloadConfig
+ 555              		.loc 1 201 0
+ 556 0428 4FF43050 		mov	r0, #11264
+ 557 042c C4F20100 		movt	r0, 16385
+ 558 0430 4FF00801 		mov	r1, #8
+ 559 0434 FFF7FEFF 		bl	TIM_OC4PreloadConfig
  202:../src/pwm.cpp **** 	TIM_ARRPreloadConfig(TIM1, ENABLE);
- 555              		.loc 1 202 0
- 556 0438 4FF43050 		mov	r0, #11264
- 557 043c C4F20100 		movt	r0, 16385
- 558 0440 4FF00101 		mov	r1, #1
- 559 0444 FFF7FEFF 		bl	TIM_ARRPreloadConfig
+ 560              		.loc 1 202 0
+ 561 0438 4FF43050 		mov	r0, #11264
+ 562 043c C4F20100 		movt	r0, 16385
+ 563 0440 4FF00101 		mov	r1, #1
+ 564 0444 FFF7FEFF 		bl	TIM_ARRPreloadConfig
  203:../src/pwm.cpp **** 
  204:../src/pwm.cpp **** 	TIM_CtrlPWMOutputs(TIM1, ENABLE);
- 560              		.loc 1 204 0
- 561 0448 4FF43050 		mov	r0, #11264
- 562 044c C4F20100 		movt	r0, 16385
- 563 0450 4FF00101 		mov	r1, #1
- 564 0454 FFF7FEFF 		bl	TIM_CtrlPWMOutputs
+ 565              		.loc 1 204 0
+ 566 0448 4FF43050 		mov	r0, #11264
+ 567 044c C4F20100 		movt	r0, 16385
+ 568 0450 4FF00101 		mov	r1, #1
+ 569 0454 FFF7FEFF 		bl	TIM_CtrlPWMOutputs
  205:../src/pwm.cpp **** //	TIM_CCPreloadControl(TIM1, ENABLE);
  206:../src/pwm.cpp **** 
  207:../src/pwm.cpp **** 	TIM_CCxCmd(TIM1, TIM_Channel_4, TIM_CCx_Enable);
- 565              		.loc 1 207 0
- 566 0458 4FF43050 		mov	r0, #11264
- 567 045c C4F20100 		movt	r0, 16385
- 568 0460 4FF00C01 		mov	r1, #12
- 569 0464 4FF00102 		mov	r2, #1
- 570 0468 FFF7FEFF 		bl	TIM_CCxCmd
+ 570              		.loc 1 207 0
+ 571 0458 4FF43050 		mov	r0, #11264
+ 572 045c C4F20100 		movt	r0, 16385
+ 573 0460 4FF00C01 		mov	r1, #12
+ 574 0464 4FF00102 		mov	r2, #1
+ 575 0468 FFF7FEFF 		bl	TIM_CCxCmd
  208:../src/pwm.cpp **** 	TIM_Cmd(TIM1, ENABLE);
- 571              		.loc 1 208 0
- 572 046c 4FF43050 		mov	r0, #11264
- 573 0470 C4F20100 		movt	r0, 16385
- 574 0474 4FF00101 		mov	r1, #1
- 575 0478 FFF7FEFF 		bl	TIM_Cmd
+ 576              		.loc 1 208 0
+ 577 046c 4FF43050 		mov	r0, #11264
+ 578 0470 C4F20100 		movt	r0, 16385
+ 579 0474 4FF00101 		mov	r1, #1
+ 580 0478 FFF7FEFF 		bl	TIM_Cmd
  209:../src/pwm.cpp **** 	TIM_GenerateEvent(TIM1, TIM_EventSource_Update);
- 576              		.loc 1 209 0
- 577 047c 4FF43050 		mov	r0, #11264
- 578 0480 C4F20100 		movt	r0, 16385
- 579 0484 4FF00101 		mov	r1, #1
- 580 0488 FFF7FEFF 		bl	TIM_GenerateEvent
- 581              	.LBE6:
+ 581              		.loc 1 209 0
+ 582 047c 4FF43050 		mov	r0, #11264
+ 583 0480 C4F20100 		movt	r0, 16385
+ 584 0484 4FF00101 		mov	r1, #1
+ 585 0488 FFF7FEFF 		bl	TIM_GenerateEvent
+ 586              	.LBE6:
  210:../src/pwm.cpp **** }
- 582              		.loc 1 210 0
- 583 048c 07F13807 		add	r7, r7, #56
- 584 0490 BD46     		mov	sp, r7
- 585 0492 80BD     		pop	{r7, pc}
- 586              		.cfi_endproc
- 587              	.LFE115:
- 589              		.align	2
- 590              		.global	_Z11pwm3_outputf
- 591              		.thumb
- 592              		.thumb_func
- 594              	_Z11pwm3_outputf:
- 595              	.LFB116:
+ 587              		.loc 1 210 0
+ 588 048c 07F13807 		add	r7, r7, #56
+ 589 0490 BD46     		mov	sp, r7
+ 590 0492 80BD     		pop	{r7, pc}
+ 591              		.cfi_endproc
+ 592              	.LFE115:
+ 594              		.align	2
+ 595              		.global	_Z11pwm3_outputf
+ 596              		.thumb
+ 597              		.thumb_func
+ 599              	_Z11pwm3_outputf:
+ 600              	.LFB116:
  211:../src/pwm.cpp **** void pwm3_output(float duty)
  212:../src/pwm.cpp **** {
- 596              		.loc 1 212 0
- 597              		.cfi_startproc
- 598              		@ args = 0, pretend = 0, frame = 16
- 599              		@ frame_needed = 1, uses_anonymous_args = 0
- 600 0494 80B5     		push	{r7, lr}
- 601              	.LCFI15:
- 602              		.cfi_def_cfa_offset 8
- 603              		.cfi_offset 7, -8
- 604              		.cfi_offset 14, -4
- 605 0496 84B0     		sub	sp, sp, #16
- 606              	.LCFI16:
- 607              		.cfi_def_cfa_offset 24
- 608 0498 00AF     		add	r7, sp, #0
- 609              	.LCFI17:
- 610              		.cfi_def_cfa_register 7
- 611 049a 7860     		str	r0, [r7, #4]	@ float
- 612              	.LBB7:
+ 601              		.loc 1 212 0
+ 602              		.cfi_startproc
+ 603              		@ args = 0, pretend = 0, frame = 16
+ 604              		@ frame_needed = 1, uses_anonymous_args = 0
+ 605 0494 80B5     		push	{r7, lr}
+ 606              	.LCFI15:
+ 607              		.cfi_def_cfa_offset 8
+ 608              		.cfi_offset 7, -8
+ 609              		.cfi_offset 14, -4
+ 610 0496 84B0     		sub	sp, sp, #16
+ 611              	.LCFI16:
+ 612              		.cfi_def_cfa_offset 24
+ 613 0498 00AF     		add	r7, sp, #0
+ 614              	.LCFI17:
+ 615              		.cfi_def_cfa_register 7
+ 616 049a 7860     		str	r0, [r7, #4]	@ float
+ 617              	.LBB7:
  213:../src/pwm.cpp **** 	uint16_t setval = (uint16_t)((float)TIM1->ARR * duty);
- 613              		.loc 1 213 0
- 614 049c 4FF43053 		mov	r3, #11264
- 615 04a0 C4F20103 		movt	r3, 16385
- 616 04a4 D3ED0B7A 		flds	s15, [r3, #44]	@ int
- 617 04a8 B8EE677A 		fuitos	s14, s15
- 618 04ac D7ED017A 		flds	s15, [r7, #4]
- 619 04b0 67EE277A 		fmuls	s15, s14, s15
- 620 04b4 FCEEE77A 		ftouizs	s15, s15
- 621 04b8 17EE903A 		fmrs	r3, s15	@ int
- 622 04bc FB81     		strh	r3, [r7, #14]	@ movhi
+ 618              		.loc 1 213 0
+ 619 049c 4FF43053 		mov	r3, #11264
+ 620 04a0 C4F20103 		movt	r3, 16385
+ 621 04a4 D3ED0B7A 		flds	s15, [r3, #44]	@ int
+ 622 04a8 B8EE677A 		fuitos	s14, s15
+ 623 04ac D7ED017A 		flds	s15, [r7, #4]
+ 624 04b0 67EE277A 		fmuls	s15, s14, s15
+ 625 04b4 FCEEE77A 		ftouizs	s15, s15
+ 626 04b8 17EE903A 		fmrs	r3, s15	@ int
+ 627 04bc FB81     		strh	r3, [r7, #14]	@ movhi
  214:../src/pwm.cpp **** 	TIM_SetCompare4(TIM1, setval);
- 623              		.loc 1 214 0
- 624 04be FB89     		ldrh	r3, [r7, #14]
- 625 04c0 4FF43050 		mov	r0, #11264
- 626 04c4 C4F20100 		movt	r0, 16385
- 627 04c8 1946     		mov	r1, r3
- 628 04ca FFF7FEFF 		bl	TIM_SetCompare4
- 629              	.LBE7:
+ 628              		.loc 1 214 0
+ 629 04be FB89     		ldrh	r3, [r7, #14]
+ 630 04c0 4FF43050 		mov	r0, #11264
+ 631 04c4 C4F20100 		movt	r0, 16385
+ 632 04c8 1946     		mov	r1, r3
+ 633 04ca FFF7FEFF 		bl	TIM_SetCompare4
+ 634              	.LBE7:
  215:../src/pwm.cpp **** }
- 630              		.loc 1 215 0
- 631 04ce 07F11007 		add	r7, r7, #16
- 632 04d2 BD46     		mov	sp, r7
- 633 04d4 80BD     		pop	{r7, pc}
- 634              		.cfi_endproc
- 635              	.LFE116:
- 637              		.global	__aeabi_i2d
- 638              		.global	__aeabi_d2iz
- 639 04d6 00BF     		.align	2
- 640              		.global	_Z15config_pwm_freqiPiS_
- 641              		.thumb
- 642              		.thumb_func
- 644              	_Z15config_pwm_freqiPiS_:
- 645              	.LFB117:
+ 635              		.loc 1 215 0
+ 636 04ce 07F11007 		add	r7, r7, #16
+ 637 04d2 BD46     		mov	sp, r7
+ 638 04d4 80BD     		pop	{r7, pc}
+ 639              		.cfi_endproc
+ 640              	.LFE116:
+ 642              		.global	__aeabi_i2d
+ 643              		.global	__aeabi_d2iz
+ 644 04d6 00BF     		.align	2
+ 645              		.global	_Z15config_pwm_freqiPiS_
+ 646              		.thumb
+ 647              		.thumb_func
+ 649              	_Z15config_pwm_freqiPiS_:
+ 650              	.LFB117:
  216:../src/pwm.cpp **** 
  217:../src/pwm.cpp **** void config_pwm_freq(int frequency, int* period, int* prescaler)
  218:../src/pwm.cpp **** {
- 646              		.loc 1 218 0
- 647              		.cfi_startproc
- 648              		@ args = 0, pretend = 0, frame = 64
- 649              		@ frame_needed = 1, uses_anonymous_args = 0
- 650 04d8 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
- 651              	.LCFI18:
- 652              		.cfi_def_cfa_offset 36
- 653              		.cfi_offset 4, -36
- 654              		.cfi_offset 5, -32
- 655              		.cfi_offset 6, -28
- 656              		.cfi_offset 7, -24
- 657              		.cfi_offset 8, -20
- 658              		.cfi_offset 9, -16
- 659              		.cfi_offset 10, -12
- 660              		.cfi_offset 11, -8
- 661              		.cfi_offset 14, -4
- 662 04dc 91B0     		sub	sp, sp, #68
- 663              	.LCFI19:
- 664              		.cfi_def_cfa_offset 104
- 665 04de 00AF     		add	r7, sp, #0
- 666              	.LCFI20:
- 667              		.cfi_def_cfa_register 7
- 668 04e0 F860     		str	r0, [r7, #12]
- 669 04e2 B960     		str	r1, [r7, #8]
- 670 04e4 7A60     		str	r2, [r7, #4]
- 671 04e6 6B46     		mov	r3, sp
- 672 04e8 1E46     		mov	r6, r3
- 673              	.LBB8:
+ 651              		.loc 1 218 0
+ 652              		.cfi_startproc
+ 653              		@ args = 0, pretend = 0, frame = 64
+ 654              		@ frame_needed = 1, uses_anonymous_args = 0
+ 655 04d8 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+ 656              	.LCFI18:
+ 657              		.cfi_def_cfa_offset 36
+ 658              		.cfi_offset 4, -36
+ 659              		.cfi_offset 5, -32
+ 660              		.cfi_offset 6, -28
+ 661              		.cfi_offset 7, -24
+ 662              		.cfi_offset 8, -20
+ 663              		.cfi_offset 9, -16
+ 664              		.cfi_offset 10, -12
+ 665              		.cfi_offset 11, -8
+ 666              		.cfi_offset 14, -4
+ 667 04dc 91B0     		sub	sp, sp, #68
+ 668              	.LCFI19:
+ 669              		.cfi_def_cfa_offset 104
+ 670 04de 00AF     		add	r7, sp, #0
+ 671              	.LCFI20:
+ 672              		.cfi_def_cfa_register 7
+ 673 04e0 F860     		str	r0, [r7, #12]
+ 674 04e2 B960     		str	r1, [r7, #8]
+ 675 04e4 7A60     		str	r2, [r7, #4]
+ 676 04e6 6B46     		mov	r3, sp
+ 677 04e8 1E46     		mov	r6, r3
+ 678              	.LBB8:
  219:../src/pwm.cpp **** 	int max = (int)((float)72000000/(float)frequency);
- 674              		.loc 1 219 0
- 675 04ea D7ED037A 		flds	s15, [r7, #12]	@ int
- 676 04ee F8EEE77A 		fsitos	s15, s15
- 677 04f2 9FEDA97A 		flds	s14, .L32
- 678 04f6 C7EE277A 		fdivs	s15, s14, s15
- 679 04fa FDEEE77A 		ftosizs	s15, s15
- 680 04fe C7ED097A 		fsts	s15, [r7, #36]	@ int
+ 679              		.loc 1 219 0
+ 680 04ea D7ED037A 		flds	s15, [r7, #12]	@ int
+ 681 04ee F8EEE77A 		fsitos	s15, s15
+ 682 04f2 9FEDA97A 		flds	s14, .L32
+ 683 04f6 C7EE277A 		fdivs	s15, s14, s15
+ 684 04fa FDEEE77A 		ftosizs	s15, s15
+ 685 04fe C7ED097A 		fsts	s15, [r7, #36]	@ int
  220:../src/pwm.cpp **** 
  221:../src/pwm.cpp **** 	int max_num = (int)sqrt(max);
- 681              		.loc 1 221 0
- 682 0502 786A     		ldr	r0, [r7, #36]
- 683 0504 FFF7FEFF 		bl	__aeabi_i2d
- 684 0508 0246     		mov	r2, r0
- 685 050a 0B46     		mov	r3, r1
- 686 050c 1046     		mov	r0, r2
- 687 050e 1946     		mov	r1, r3
- 688 0510 FFF7FEFF 		bl	sqrt
- 689 0514 0246     		mov	r2, r0
- 690 0516 0B46     		mov	r3, r1
- 691 0518 1046     		mov	r0, r2
- 692 051a 1946     		mov	r1, r3
- 693 051c FFF7FEFF 		bl	__aeabi_d2iz
- 694 0520 0346     		mov	r3, r0
- 695 0522 3B62     		str	r3, [r7, #32]
+ 686              		.loc 1 221 0
+ 687 0502 786A     		ldr	r0, [r7, #36]
+ 688 0504 FFF7FEFF 		bl	__aeabi_i2d
+ 689 0508 0246     		mov	r2, r0
+ 690 050a 0B46     		mov	r3, r1
+ 691 050c 1046     		mov	r0, r2
+ 692 050e 1946     		mov	r1, r3
+ 693 0510 FFF7FEFF 		bl	sqrt
+ 694 0514 0246     		mov	r2, r0
+ 695 0516 0B46     		mov	r3, r1
+ 696 0518 1046     		mov	r0, r2
+ 697 051a 1946     		mov	r1, r3
+ 698 051c FFF7FEFF 		bl	__aeabi_d2iz
+ 699 0520 0346     		mov	r3, r0
+ 700 0522 3B62     		str	r3, [r7, #32]
  222:../src/pwm.cpp **** 
  223:../src/pwm.cpp **** 	int seive[max_num];
- 696              		.loc 1 223 0
- 697 0524 3B6A     		ldr	r3, [r7, #32]
- 698 0526 03F1FF31 		add	r1, r3, #-1
- 699 052a F961     		str	r1, [r7, #28]
- 700 052c 0846     		mov	r0, r1
- 701 052e 0246     		mov	r2, r0
- 702 0530 4FF00003 		mov	r3, #0
- 703 0534 4FF0010A 		mov	sl, #1
- 704 0538 4FF0000B 		mov	fp, #0
- 705 053c 12EB0A02 		adds	r2, r2, sl
- 706 0540 43EB0B03 		adc	r3, r3, fp
- 707 0544 4FEAD260 		lsr	r0, r2, #27
- 708 0548 4FEA4319 		lsl	r9, r3, #5
- 709 054c 40EA0909 		orr	r9, r0, r9
- 710 0550 4FEA4218 		lsl	r8, r2, #5
- 711 0554 0846     		mov	r0, r1
- 712 0556 0246     		mov	r2, r0
- 713 0558 4FF00003 		mov	r3, #0
- 714 055c 4FF00108 		mov	r8, #1
- 715 0560 4FF00009 		mov	r9, #0
- 716 0564 12EB0802 		adds	r2, r2, r8
- 717 0568 43EB0903 		adc	r3, r3, r9
- 718 056c 4FEAD260 		lsr	r0, r2, #27
- 719 0570 4FEA4315 		lsl	r5, r3, #5
- 720 0574 0543     		orrs	r5, r5, r0
- 721 0576 4FEA4214 		lsl	r4, r2, #5
- 722 057a 0B46     		mov	r3, r1
- 723 057c 03F10103 		add	r3, r3, #1
- 724 0580 4FEA8303 		lsl	r3, r3, #2
- 725 0584 03F10303 		add	r3, r3, #3
- 726 0588 03F10703 		add	r3, r3, #7
- 727 058c 4FEAD303 		lsr	r3, r3, #3
- 728 0590 4FEAC303 		lsl	r3, r3, #3
- 729 0594 ADEB030D 		sub	sp, sp, r3
- 730 0598 6B46     		mov	r3, sp
- 731 059a 03F10303 		add	r3, r3, #3
- 732 059e 4FEA9303 		lsr	r3, r3, #2
- 733 05a2 4FEA8303 		lsl	r3, r3, #2
- 734 05a6 BB61     		str	r3, [r7, #24]
+ 701              		.loc 1 223 0
+ 702 0524 3B6A     		ldr	r3, [r7, #32]
+ 703 0526 03F1FF31 		add	r1, r3, #-1
+ 704 052a F961     		str	r1, [r7, #28]
+ 705 052c 0846     		mov	r0, r1
+ 706 052e 0246     		mov	r2, r0
+ 707 0530 4FF00003 		mov	r3, #0
+ 708 0534 4FF0010A 		mov	sl, #1
+ 709 0538 4FF0000B 		mov	fp, #0
+ 710 053c 12EB0A02 		adds	r2, r2, sl
+ 711 0540 43EB0B03 		adc	r3, r3, fp
+ 712 0544 4FEAD260 		lsr	r0, r2, #27
+ 713 0548 4FEA4319 		lsl	r9, r3, #5
+ 714 054c 40EA0909 		orr	r9, r0, r9
+ 715 0550 4FEA4218 		lsl	r8, r2, #5
+ 716 0554 0846     		mov	r0, r1
+ 717 0556 0246     		mov	r2, r0
+ 718 0558 4FF00003 		mov	r3, #0
+ 719 055c 4FF00108 		mov	r8, #1
+ 720 0560 4FF00009 		mov	r9, #0
+ 721 0564 12EB0802 		adds	r2, r2, r8
+ 722 0568 43EB0903 		adc	r3, r3, r9
+ 723 056c 4FEAD260 		lsr	r0, r2, #27
+ 724 0570 4FEA4315 		lsl	r5, r3, #5
+ 725 0574 0543     		orrs	r5, r5, r0
+ 726 0576 4FEA4214 		lsl	r4, r2, #5
+ 727 057a 0B46     		mov	r3, r1
+ 728 057c 03F10103 		add	r3, r3, #1
+ 729 0580 4FEA8303 		lsl	r3, r3, #2
+ 730 0584 03F10303 		add	r3, r3, #3
+ 731 0588 03F10703 		add	r3, r3, #7
+ 732 058c 4FEAD303 		lsr	r3, r3, #3
+ 733 0590 4FEAC303 		lsl	r3, r3, #3
+ 734 0594 ADEB030D 		sub	sp, sp, r3
+ 735 0598 6B46     		mov	r3, sp
+ 736 059a 03F10303 		add	r3, r3, #3
+ 737 059e 4FEA9303 		lsr	r3, r3, #2
+ 738 05a2 4FEA8303 		lsl	r3, r3, #2
+ 739 05a6 BB61     		str	r3, [r7, #24]
  224:../src/pwm.cpp **** 
  225:../src/pwm.cpp **** 	int startpos = 1;
- 735              		.loc 1 225 0
- 736 05a8 4FF00103 		mov	r3, #1
- 737 05ac FB63     		str	r3, [r7, #60]
+ 740              		.loc 1 225 0
+ 741 05a8 4FF00103 		mov	r3, #1
+ 742 05ac FB63     		str	r3, [r7, #60]
  226:../src/pwm.cpp **** 	int testval = 1;
- 738              		.loc 1 226 0
- 739 05ae 4FF00103 		mov	r3, #1
- 740 05b2 7B61     		str	r3, [r7, #20]
+ 743              		.loc 1 226 0
+ 744 05ae 4FF00103 		mov	r3, #1
+ 745 05b2 7B61     		str	r3, [r7, #20]
  227:../src/pwm.cpp **** 
  228:../src/pwm.cpp **** 	int iter = 0;
- 741              		.loc 1 228 0
- 742 05b4 4FF00003 		mov	r3, #0
- 743 05b8 BB63     		str	r3, [r7, #56]
+ 746              		.loc 1 228 0
+ 747 05b4 4FF00003 		mov	r3, #0
+ 748 05b8 BB63     		str	r3, [r7, #56]
  229:../src/pwm.cpp **** 	int iter2;
  230:../src/pwm.cpp **** 	for(iter = 0; iter < max_num; ++iter)
- 744              		.loc 1 230 0
- 745 05ba 4FF00003 		mov	r3, #0
- 746 05be BB63     		str	r3, [r7, #56]
- 747 05c0 0AE0     		b	.L8
- 748              	.L9:
+ 749              		.loc 1 230 0
+ 750 05ba 4FF00003 		mov	r3, #0
+ 751 05be BB63     		str	r3, [r7, #56]
+ 752 05c0 0AE0     		b	.L8
+ 753              	.L9:
  231:../src/pwm.cpp **** 	{
  232:../src/pwm.cpp **** 		seive[iter] = iter+1;
- 749              		.loc 1 232 0 discriminator 2
- 750 05c2 BB6B     		ldr	r3, [r7, #56]
- 751 05c4 03F10101 		add	r1, r3, #1
- 752 05c8 BB69     		ldr	r3, [r7, #24]
- 753 05ca BA6B     		ldr	r2, [r7, #56]
- 754 05cc 43F82210 		str	r1, [r3, r2, lsl #2]
+ 754              		.loc 1 232 0 discriminator 2
+ 755 05c2 BB6B     		ldr	r3, [r7, #56]
+ 756 05c4 03F10101 		add	r1, r3, #1
+ 757 05c8 BB69     		ldr	r3, [r7, #24]
+ 758 05ca BA6B     		ldr	r2, [r7, #56]
+ 759 05cc 43F82210 		str	r1, [r3, r2, lsl #2]
  230:../src/pwm.cpp **** 	for(iter = 0; iter < max_num; ++iter)
- 755              		.loc 1 230 0 discriminator 2
- 756 05d0 BB6B     		ldr	r3, [r7, #56]
- 757 05d2 03F10103 		add	r3, r3, #1
- 758 05d6 BB63     		str	r3, [r7, #56]
- 759              	.L8:
+ 760              		.loc 1 230 0 discriminator 2
+ 761 05d0 BB6B     		ldr	r3, [r7, #56]
+ 762 05d2 03F10103 		add	r3, r3, #1
+ 763 05d6 BB63     		str	r3, [r7, #56]
+ 764              	.L8:
  230:../src/pwm.cpp **** 	for(iter = 0; iter < max_num; ++iter)
- 760              		.loc 1 230 0 is_stmt 0 discriminator 1
- 761 05d8 BA6B     		ldr	r2, [r7, #56]
- 762 05da 3B6A     		ldr	r3, [r7, #32]
- 763 05dc 9A42     		cmp	r2, r3
- 764 05de ACBF     		ite	ge
- 765 05e0 0023     		movge	r3, #0
- 766 05e2 0123     		movlt	r3, #1
- 767 05e4 DBB2     		uxtb	r3, r3
- 768 05e6 002B     		cmp	r3, #0
- 769 05e8 EBD1     		bne	.L9
+ 765              		.loc 1 230 0 is_stmt 0 discriminator 1
+ 766 05d8 BA6B     		ldr	r2, [r7, #56]
+ 767 05da 3B6A     		ldr	r3, [r7, #32]
+ 768 05dc 9A42     		cmp	r2, r3
+ 769 05de ACBF     		ite	ge
+ 770 05e0 0023     		movge	r3, #0
+ 771 05e2 0123     		movlt	r3, #1
+ 772 05e4 DBB2     		uxtb	r3, r3
+ 773 05e6 002B     		cmp	r3, #0
+ 774 05e8 EBD1     		bne	.L9
  233:../src/pwm.cpp **** 	}
  234:../src/pwm.cpp **** 
  235:../src/pwm.cpp **** 	while(startpos < max_num)
- 770              		.loc 1 235 0 is_stmt 1
- 771 05ea 38E0     		b	.L10
- 772              	.L15:
+ 775              		.loc 1 235 0 is_stmt 1
+ 776 05ea 38E0     		b	.L10
+ 777              	.L15:
  236:../src/pwm.cpp **** 	{
  237:../src/pwm.cpp **** 		testval = seive[startpos];
- 773              		.loc 1 237 0
- 774 05ec BB69     		ldr	r3, [r7, #24]
- 775 05ee FA6B     		ldr	r2, [r7, #60]
- 776 05f0 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 777 05f4 7B61     		str	r3, [r7, #20]
+ 778              		.loc 1 237 0
+ 779 05ec BB69     		ldr	r3, [r7, #24]
+ 780 05ee FA6B     		ldr	r2, [r7, #60]
+ 781 05f0 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 782 05f4 7B61     		str	r3, [r7, #20]
  238:../src/pwm.cpp **** 		if(testval != -1)
- 778              		.loc 1 238 0
- 779 05f6 7B69     		ldr	r3, [r7, #20]
- 780 05f8 B3F1FF3F 		cmp	r3, #-1
- 781 05fc 2BD0     		beq	.L11
+ 783              		.loc 1 238 0
+ 784 05f6 7B69     		ldr	r3, [r7, #20]
+ 785 05f8 B3F1FF3F 		cmp	r3, #-1
+ 786 05fc 2BD0     		beq	.L11
  239:../src/pwm.cpp **** 		{
  240:../src/pwm.cpp **** 		for(iter = startpos+1; iter < max_num; ++iter)
- 782              		.loc 1 240 0
- 783 05fe FB6B     		ldr	r3, [r7, #60]
- 784 0600 03F10103 		add	r3, r3, #1
- 785 0604 BB63     		str	r3, [r7, #56]
- 786 0606 1DE0     		b	.L12
- 787              	.L14:
+ 787              		.loc 1 240 0
+ 788 05fe FB6B     		ldr	r3, [r7, #60]
+ 789 0600 03F10103 		add	r3, r3, #1
+ 790 0604 BB63     		str	r3, [r7, #56]
+ 791 0606 1DE0     		b	.L12
+ 792              	.L14:
  241:../src/pwm.cpp **** 		{
  242:../src/pwm.cpp **** 			if((seive[iter] != -1) && ((seive[iter])%testval == 0))
- 788              		.loc 1 242 0
- 789 0608 BB69     		ldr	r3, [r7, #24]
- 790 060a BA6B     		ldr	r2, [r7, #56]
- 791 060c 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 792 0610 B3F1FF3F 		cmp	r3, #-1
- 793 0614 12D0     		beq	.L13
- 794              		.loc 1 242 0 is_stmt 0 discriminator 1
- 795 0616 BB69     		ldr	r3, [r7, #24]
- 796 0618 BA6B     		ldr	r2, [r7, #56]
- 797 061a 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 798 061e 7A69     		ldr	r2, [r7, #20]
- 799 0620 93FBF2F2 		sdiv	r2, r3, r2
- 800 0624 7969     		ldr	r1, [r7, #20]
- 801 0626 01FB02F2 		mul	r2, r1, r2
- 802 062a 9B1A     		subs	r3, r3, r2
- 803 062c 002B     		cmp	r3, #0
- 804 062e 05D1     		bne	.L13
+ 793              		.loc 1 242 0
+ 794 0608 BB69     		ldr	r3, [r7, #24]
+ 795 060a BA6B     		ldr	r2, [r7, #56]
+ 796 060c 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 797 0610 B3F1FF3F 		cmp	r3, #-1
+ 798 0614 12D0     		beq	.L13
+ 799              		.loc 1 242 0 is_stmt 0 discriminator 1
+ 800 0616 BB69     		ldr	r3, [r7, #24]
+ 801 0618 BA6B     		ldr	r2, [r7, #56]
+ 802 061a 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 803 061e 7A69     		ldr	r2, [r7, #20]
+ 804 0620 93FBF2F2 		sdiv	r2, r3, r2
+ 805 0624 7969     		ldr	r1, [r7, #20]
+ 806 0626 01FB02F2 		mul	r2, r1, r2
+ 807 062a 9B1A     		subs	r3, r3, r2
+ 808 062c 002B     		cmp	r3, #0
+ 809 062e 05D1     		bne	.L13
  243:../src/pwm.cpp **** 			{
  244:../src/pwm.cpp **** 				seive[iter] = -1;
- 805              		.loc 1 244 0 is_stmt 1
- 806 0630 BB69     		ldr	r3, [r7, #24]
- 807 0632 BA6B     		ldr	r2, [r7, #56]
- 808 0634 4FF0FF31 		mov	r1, #-1
- 809 0638 43F82210 		str	r1, [r3, r2, lsl #2]
- 810              	.L13:
+ 810              		.loc 1 244 0 is_stmt 1
+ 811 0630 BB69     		ldr	r3, [r7, #24]
+ 812 0632 BA6B     		ldr	r2, [r7, #56]
+ 813 0634 4FF0FF31 		mov	r1, #-1
+ 814 0638 43F82210 		str	r1, [r3, r2, lsl #2]
+ 815              	.L13:
  240:../src/pwm.cpp **** 		for(iter = startpos+1; iter < max_num; ++iter)
- 811              		.loc 1 240 0
- 812 063c BB6B     		ldr	r3, [r7, #56]
- 813 063e 03F10103 		add	r3, r3, #1
- 814 0642 BB63     		str	r3, [r7, #56]
- 815              	.L12:
+ 816              		.loc 1 240 0
+ 817 063c BB6B     		ldr	r3, [r7, #56]
+ 818 063e 03F10103 		add	r3, r3, #1
+ 819 0642 BB63     		str	r3, [r7, #56]
+ 820              	.L12:
  240:../src/pwm.cpp **** 		for(iter = startpos+1; iter < max_num; ++iter)
- 816              		.loc 1 240 0 is_stmt 0 discriminator 1
- 817 0644 BA6B     		ldr	r2, [r7, #56]
- 818 0646 3B6A     		ldr	r3, [r7, #32]
- 819 0648 9A42     		cmp	r2, r3
- 820 064a ACBF     		ite	ge
- 821 064c 0023     		movge	r3, #0
- 822 064e 0123     		movlt	r3, #1
- 823 0650 DBB2     		uxtb	r3, r3
- 824 0652 002B     		cmp	r3, #0
- 825 0654 D8D1     		bne	.L14
- 826              	.L11:
+ 821              		.loc 1 240 0 is_stmt 0 discriminator 1
+ 822 0644 BA6B     		ldr	r2, [r7, #56]
+ 823 0646 3B6A     		ldr	r3, [r7, #32]
+ 824 0648 9A42     		cmp	r2, r3
+ 825 064a ACBF     		ite	ge
+ 826 064c 0023     		movge	r3, #0
+ 827 064e 0123     		movlt	r3, #1
+ 828 0650 DBB2     		uxtb	r3, r3
+ 829 0652 002B     		cmp	r3, #0
+ 830 0654 D8D1     		bne	.L14
+ 831              	.L11:
  245:../src/pwm.cpp **** 			}
  246:../src/pwm.cpp **** 		}
  247:../src/pwm.cpp **** 		}
  248:../src/pwm.cpp **** 		++startpos;
- 827              		.loc 1 248 0 is_stmt 1
- 828 0656 FB6B     		ldr	r3, [r7, #60]
- 829 0658 03F10103 		add	r3, r3, #1
- 830 065c FB63     		str	r3, [r7, #60]
- 831              	.L10:
+ 832              		.loc 1 248 0 is_stmt 1
+ 833 0656 FB6B     		ldr	r3, [r7, #60]
+ 834 0658 03F10103 		add	r3, r3, #1
+ 835 065c FB63     		str	r3, [r7, #60]
+ 836              	.L10:
  235:../src/pwm.cpp **** 	while(startpos < max_num)
- 832              		.loc 1 235 0 discriminator 1
- 833 065e FA6B     		ldr	r2, [r7, #60]
- 834 0660 3B6A     		ldr	r3, [r7, #32]
- 835 0662 9A42     		cmp	r2, r3
- 836 0664 ACBF     		ite	ge
- 837 0666 0023     		movge	r3, #0
- 838 0668 0123     		movlt	r3, #1
- 839 066a DBB2     		uxtb	r3, r3
- 840 066c 002B     		cmp	r3, #0
- 841 066e BDD1     		bne	.L15
+ 837              		.loc 1 235 0 discriminator 1
+ 838 065e FA6B     		ldr	r2, [r7, #60]
+ 839 0660 3B6A     		ldr	r3, [r7, #32]
+ 840 0662 9A42     		cmp	r2, r3
+ 841 0664 ACBF     		ite	ge
+ 842 0666 0023     		movge	r3, #0
+ 843 0668 0123     		movlt	r3, #1
+ 844 066a DBB2     		uxtb	r3, r3
+ 845 066c 002B     		cmp	r3, #0
+ 846 066e BDD1     		bne	.L15
  249:../src/pwm.cpp **** 	}
  250:../src/pwm.cpp **** 
  251:../src/pwm.cpp **** 	int last_valid_iter;
  252:../src/pwm.cpp **** 
  253:../src/pwm.cpp **** 	iter = 0;
- 842              		.loc 1 253 0
- 843 0670 4FF00003 		mov	r3, #0
- 844 0674 BB63     		str	r3, [r7, #56]
+ 847              		.loc 1 253 0
+ 848 0670 4FF00003 		mov	r3, #0
+ 849 0674 BB63     		str	r3, [r7, #56]
  254:../src/pwm.cpp **** 	for(iter = 0; iter < max_num; ++iter)
- 845              		.loc 1 254 0
- 846 0676 4FF00003 		mov	r3, #0
- 847 067a BB63     		str	r3, [r7, #56]
- 848 067c 3EE0     		b	.L16
- 849              	.L22:
+ 850              		.loc 1 254 0
+ 851 0676 4FF00003 		mov	r3, #0
+ 852 067a BB63     		str	r3, [r7, #56]
+ 853 067c 3EE0     		b	.L16
+ 854              	.L22:
  255:../src/pwm.cpp **** 	{
  256:../src/pwm.cpp **** 		if(seive[iter] != -1)
- 850              		.loc 1 256 0
- 851 067e BB69     		ldr	r3, [r7, #24]
- 852 0680 BA6B     		ldr	r2, [r7, #56]
- 853 0682 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 854 0686 B3F1FF3F 		cmp	r3, #-1
- 855 068a 02D0     		beq	.L17
+ 855              		.loc 1 256 0
+ 856 067e BB69     		ldr	r3, [r7, #24]
+ 857 0680 BA6B     		ldr	r2, [r7, #56]
+ 858 0682 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 859 0686 B3F1FF3F 		cmp	r3, #-1
+ 860 068a 02D0     		beq	.L17
  257:../src/pwm.cpp **** 		{
  258:../src/pwm.cpp **** 		last_valid_iter = iter;
- 856              		.loc 1 258 0
- 857 068c BB6B     		ldr	r3, [r7, #56]
- 858 068e 3B63     		str	r3, [r7, #48]
- 859 0690 30E0     		b	.L18
- 860              	.L17:
+ 861              		.loc 1 258 0
+ 862 068c BB6B     		ldr	r3, [r7, #56]
+ 863 068e 3B63     		str	r3, [r7, #48]
+ 864 0690 30E0     		b	.L18
+ 865              	.L17:
  259:../src/pwm.cpp **** 		}
  260:../src/pwm.cpp **** 		else
  261:../src/pwm.cpp **** 		{
  262:../src/pwm.cpp **** 			for(iter2 = iter; iter2<max_num; ++iter2)
- 861              		.loc 1 262 0
- 862 0692 BB6B     		ldr	r3, [r7, #56]
- 863 0694 7B63     		str	r3, [r7, #52]
- 864 0696 24E0     		b	.L19
- 865              	.L21:
+ 866              		.loc 1 262 0
+ 867 0692 BB6B     		ldr	r3, [r7, #56]
+ 868 0694 7B63     		str	r3, [r7, #52]
+ 869 0696 24E0     		b	.L19
+ 870              	.L21:
  263:../src/pwm.cpp **** 			{
  264:../src/pwm.cpp **** 				if(seive[iter2] != -1)
- 866              		.loc 1 264 0
- 867 0698 BB69     		ldr	r3, [r7, #24]
- 868 069a 7A6B     		ldr	r2, [r7, #52]
- 869 069c 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 870 06a0 B3F1FF3F 		cmp	r3, #-1
- 871 06a4 19D0     		beq	.L20
+ 871              		.loc 1 264 0
+ 872 0698 BB69     		ldr	r3, [r7, #24]
+ 873 069a 7A6B     		ldr	r2, [r7, #52]
+ 874 069c 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 875 06a0 B3F1FF3F 		cmp	r3, #-1
+ 876 06a4 19D0     		beq	.L20
  265:../src/pwm.cpp **** 				{
  266:../src/pwm.cpp **** 				seive[last_valid_iter+1] = seive[iter2];
- 872              		.loc 1 266 0
- 873 06a6 3B6B     		ldr	r3, [r7, #48]
- 874 06a8 03F10102 		add	r2, r3, #1
- 875 06ac BB69     		ldr	r3, [r7, #24]
- 876 06ae 796B     		ldr	r1, [r7, #52]
- 877 06b0 53F82110 		ldr	r1, [r3, r1, lsl #2]
- 878 06b4 BB69     		ldr	r3, [r7, #24]
- 879 06b6 43F82210 		str	r1, [r3, r2, lsl #2]
+ 877              		.loc 1 266 0
+ 878 06a6 3B6B     		ldr	r3, [r7, #48]
+ 879 06a8 03F10102 		add	r2, r3, #1
+ 880 06ac BB69     		ldr	r3, [r7, #24]
+ 881 06ae 796B     		ldr	r1, [r7, #52]
+ 882 06b0 53F82110 		ldr	r1, [r3, r1, lsl #2]
+ 883 06b4 BB69     		ldr	r3, [r7, #24]
+ 884 06b6 43F82210 		str	r1, [r3, r2, lsl #2]
  267:../src/pwm.cpp **** 				seive[iter2] = -1;
- 880              		.loc 1 267 0
- 881 06ba BB69     		ldr	r3, [r7, #24]
- 882 06bc 7A6B     		ldr	r2, [r7, #52]
- 883 06be 4FF0FF31 		mov	r1, #-1
- 884 06c2 43F82210 		str	r1, [r3, r2, lsl #2]
+ 885              		.loc 1 267 0
+ 886 06ba BB69     		ldr	r3, [r7, #24]
+ 887 06bc 7A6B     		ldr	r2, [r7, #52]
+ 888 06be 4FF0FF31 		mov	r1, #-1
+ 889 06c2 43F82210 		str	r1, [r3, r2, lsl #2]
  268:../src/pwm.cpp **** 				iter = iter2;
- 885              		.loc 1 268 0
- 886 06c6 7B6B     		ldr	r3, [r7, #52]
- 887 06c8 BB63     		str	r3, [r7, #56]
+ 890              		.loc 1 268 0
+ 891 06c6 7B6B     		ldr	r3, [r7, #52]
+ 892 06c8 BB63     		str	r3, [r7, #56]
  269:../src/pwm.cpp **** 				last_valid_iter += 1;
- 888              		.loc 1 269 0
- 889 06ca 3B6B     		ldr	r3, [r7, #48]
- 890 06cc 03F10103 		add	r3, r3, #1
- 891 06d0 3B63     		str	r3, [r7, #48]
+ 893              		.loc 1 269 0
+ 894 06ca 3B6B     		ldr	r3, [r7, #48]
+ 895 06cc 03F10103 		add	r3, r3, #1
+ 896 06d0 3B63     		str	r3, [r7, #48]
  270:../src/pwm.cpp **** 				iter2 = max_num+1;
- 892              		.loc 1 270 0
- 893 06d2 3B6A     		ldr	r3, [r7, #32]
- 894 06d4 03F10103 		add	r3, r3, #1
- 895 06d8 7B63     		str	r3, [r7, #52]
- 896              	.L20:
+ 897              		.loc 1 270 0
+ 898 06d2 3B6A     		ldr	r3, [r7, #32]
+ 899 06d4 03F10103 		add	r3, r3, #1
+ 900 06d8 7B63     		str	r3, [r7, #52]
+ 901              	.L20:
  262:../src/pwm.cpp **** 			for(iter2 = iter; iter2<max_num; ++iter2)
- 897              		.loc 1 262 0
- 898 06da 7B6B     		ldr	r3, [r7, #52]
- 899 06dc 03F10103 		add	r3, r3, #1
- 900 06e0 7B63     		str	r3, [r7, #52]
- 901              	.L19:
+ 902              		.loc 1 262 0
+ 903 06da 7B6B     		ldr	r3, [r7, #52]
+ 904 06dc 03F10103 		add	r3, r3, #1
+ 905 06e0 7B63     		str	r3, [r7, #52]
+ 906              	.L19:
  262:../src/pwm.cpp **** 			for(iter2 = iter; iter2<max_num; ++iter2)
- 902              		.loc 1 262 0 is_stmt 0 discriminator 1
- 903 06e2 7A6B     		ldr	r2, [r7, #52]
- 904 06e4 3B6A     		ldr	r3, [r7, #32]
- 905 06e6 9A42     		cmp	r2, r3
- 906 06e8 ACBF     		ite	ge
- 907 06ea 0023     		movge	r3, #0
- 908 06ec 0123     		movlt	r3, #1
- 909 06ee DBB2     		uxtb	r3, r3
- 910 06f0 002B     		cmp	r3, #0
- 911 06f2 D1D1     		bne	.L21
- 912              	.L18:
+ 907              		.loc 1 262 0 is_stmt 0 discriminator 1
+ 908 06e2 7A6B     		ldr	r2, [r7, #52]
+ 909 06e4 3B6A     		ldr	r3, [r7, #32]
+ 910 06e6 9A42     		cmp	r2, r3
+ 911 06e8 ACBF     		ite	ge
+ 912 06ea 0023     		movge	r3, #0
+ 913 06ec 0123     		movlt	r3, #1
+ 914 06ee DBB2     		uxtb	r3, r3
+ 915 06f0 002B     		cmp	r3, #0
+ 916 06f2 D1D1     		bne	.L21
+ 917              	.L18:
  254:../src/pwm.cpp **** 	for(iter = 0; iter < max_num; ++iter)
- 913              		.loc 1 254 0 is_stmt 1
- 914 06f4 BB6B     		ldr	r3, [r7, #56]
- 915 06f6 03F10103 		add	r3, r3, #1
- 916 06fa BB63     		str	r3, [r7, #56]
- 917              	.L16:
+ 918              		.loc 1 254 0 is_stmt 1
+ 919 06f4 BB6B     		ldr	r3, [r7, #56]
+ 920 06f6 03F10103 		add	r3, r3, #1
+ 921 06fa BB63     		str	r3, [r7, #56]
+ 922              	.L16:
  254:../src/pwm.cpp **** 	for(iter = 0; iter < max_num; ++iter)
- 918              		.loc 1 254 0 is_stmt 0 discriminator 1
- 919 06fc BA6B     		ldr	r2, [r7, #56]
- 920 06fe 3B6A     		ldr	r3, [r7, #32]
- 921 0700 9A42     		cmp	r2, r3
- 922 0702 ACBF     		ite	ge
- 923 0704 0023     		movge	r3, #0
- 924 0706 0123     		movlt	r3, #1
- 925 0708 DBB2     		uxtb	r3, r3
- 926 070a 002B     		cmp	r3, #0
- 927 070c B7D1     		bne	.L22
+ 923              		.loc 1 254 0 is_stmt 0 discriminator 1
+ 924 06fc BA6B     		ldr	r2, [r7, #56]
+ 925 06fe 3B6A     		ldr	r3, [r7, #32]
+ 926 0700 9A42     		cmp	r2, r3
+ 927 0702 ACBF     		ite	ge
+ 928 0704 0023     		movge	r3, #0
+ 929 0706 0123     		movlt	r3, #1
+ 930 0708 DBB2     		uxtb	r3, r3
+ 931 070a 002B     		cmp	r3, #0
+ 932 070c B7D1     		bne	.L22
  271:../src/pwm.cpp **** 				}
  272:../src/pwm.cpp **** 			}
  273:../src/pwm.cpp **** 		}
  274:../src/pwm.cpp **** 	}
  275:../src/pwm.cpp **** 
  276:../src/pwm.cpp **** 	int i = max;
- 928              		.loc 1 276 0 is_stmt 1
- 929 070e 7B6A     		ldr	r3, [r7, #36]
- 930 0710 FB62     		str	r3, [r7, #44]
+ 933              		.loc 1 276 0 is_stmt 1
+ 934 070e 7B6A     		ldr	r3, [r7, #36]
+ 935 0710 FB62     		str	r3, [r7, #44]
  277:../src/pwm.cpp **** 	int clkdiv = 1;
- 931              		.loc 1 277 0
- 932 0712 4FF00103 		mov	r3, #1
- 933 0716 BB62     		str	r3, [r7, #40]
+ 936              		.loc 1 277 0
+ 937 0712 4FF00103 		mov	r3, #1
+ 938 0716 BB62     		str	r3, [r7, #40]
  278:../src/pwm.cpp **** 	int divisor = 1;
- 934              		.loc 1 278 0
- 935 0718 4FF00103 		mov	r3, #1
- 936 071c 3B61     		str	r3, [r7, #16]
+ 939              		.loc 1 278 0
+ 940 0718 4FF00103 		mov	r3, #1
+ 941 071c 3B61     		str	r3, [r7, #16]
  279:../src/pwm.cpp **** 
  280:../src/pwm.cpp **** 	while(i > 1)
- 937              		.loc 1 280 0
- 938 071e 3EE0     		b	.L23
- 939              	.L29:
+ 942              		.loc 1 280 0
+ 943 071e 3EE0     		b	.L23
+ 944              	.L29:
  281:../src/pwm.cpp **** 	{
  282:../src/pwm.cpp **** 	for(iter = 1; iter < max_num; ++iter)
- 940              		.loc 1 282 0
- 941 0720 4FF00103 		mov	r3, #1
- 942 0724 BB63     		str	r3, [r7, #56]
- 943 0726 2CE0     		b	.L24
- 944              	.L28:
+ 945              		.loc 1 282 0
+ 946 0720 4FF00103 		mov	r3, #1
+ 947 0724 BB63     		str	r3, [r7, #56]
+ 948 0726 2CE0     		b	.L24
+ 949              	.L28:
  283:../src/pwm.cpp **** 	{
  284:../src/pwm.cpp **** 		divisor = seive[iter];
- 945              		.loc 1 284 0
- 946 0728 BB69     		ldr	r3, [r7, #24]
- 947 072a BA6B     		ldr	r2, [r7, #56]
- 948 072c 53F82230 		ldr	r3, [r3, r2, lsl #2]
- 949 0730 3B61     		str	r3, [r7, #16]
+ 950              		.loc 1 284 0
+ 951 0728 BB69     		ldr	r3, [r7, #24]
+ 952 072a BA6B     		ldr	r2, [r7, #56]
+ 953 072c 53F82230 		ldr	r3, [r3, r2, lsl #2]
+ 954 0730 3B61     		str	r3, [r7, #16]
  285:../src/pwm.cpp **** 		if(divisor == -1){break;}
- 950              		.loc 1 285 0
- 951 0732 3B69     		ldr	r3, [r7, #16]
- 952 0734 B3F1FF3F 		cmp	r3, #-1
- 953 0738 30D0     		beq	.L31
- 954              	.L25:
+ 955              		.loc 1 285 0
+ 956 0732 3B69     		ldr	r3, [r7, #16]
+ 957 0734 B3F1FF3F 		cmp	r3, #-1
+ 958 0738 30D0     		beq	.L31
+ 959              	.L25:
  286:../src/pwm.cpp **** 		else
  287:../src/pwm.cpp **** 		{
  288:../src/pwm.cpp **** 		if(i%divisor == 0)
- 955              		.loc 1 288 0
- 956 073a FB6A     		ldr	r3, [r7, #44]
- 957 073c 3A69     		ldr	r2, [r7, #16]
- 958 073e 93FBF2F2 		sdiv	r2, r3, r2
- 959 0742 3969     		ldr	r1, [r7, #16]
- 960 0744 01FB02F2 		mul	r2, r1, r2
- 961 0748 9B1A     		subs	r3, r3, r2
- 962 074a 002B     		cmp	r3, #0
- 963 074c 15D1     		bne	.L26
+ 960              		.loc 1 288 0
+ 961 073a FB6A     		ldr	r3, [r7, #44]
+ 962 073c 3A69     		ldr	r2, [r7, #16]
+ 963 073e 93FBF2F2 		sdiv	r2, r3, r2
+ 964 0742 3969     		ldr	r1, [r7, #16]
+ 965 0744 01FB02F2 		mul	r2, r1, r2
+ 966 0748 9B1A     		subs	r3, r3, r2
+ 967 074a 002B     		cmp	r3, #0
+ 968 074c 15D1     		bne	.L26
  289:../src/pwm.cpp **** 			{
  290:../src/pwm.cpp **** 			i /= divisor;
- 964              		.loc 1 290 0
- 965 074e FA6A     		ldr	r2, [r7, #44]
- 966 0750 3B69     		ldr	r3, [r7, #16]
- 967 0752 92FBF3F3 		sdiv	r3, r2, r3
- 968 0756 FB62     		str	r3, [r7, #44]
+ 969              		.loc 1 290 0
+ 970 074e FA6A     		ldr	r2, [r7, #44]
+ 971 0750 3B69     		ldr	r3, [r7, #16]
+ 972 0752 92FBF3F3 		sdiv	r3, r2, r3
+ 973 0756 FB62     		str	r3, [r7, #44]
  291:../src/pwm.cpp **** 			clkdiv *= divisor;
- 969              		.loc 1 291 0
- 970 0758 BB6A     		ldr	r3, [r7, #40]
- 971 075a 3A69     		ldr	r2, [r7, #16]
- 972 075c 02FB03F3 		mul	r3, r2, r3
- 973 0760 BB62     		str	r3, [r7, #40]
+ 974              		.loc 1 291 0
+ 975 0758 BB6A     		ldr	r3, [r7, #40]
+ 976 075a 3A69     		ldr	r2, [r7, #16]
+ 977 075c 02FB03F3 		mul	r3, r2, r3
+ 978 0760 BB62     		str	r3, [r7, #40]
  292:../src/pwm.cpp **** 			if(i < 65536)
- 974              		.loc 1 292 0
- 975 0762 FA6A     		ldr	r2, [r7, #44]
- 976 0764 4FF6FF73 		movw	r3, #65535
- 977 0768 9A42     		cmp	r2, r3
- 978 076a 06DC     		bgt	.L26
+ 979              		.loc 1 292 0
+ 980 0762 FA6A     		ldr	r2, [r7, #44]
+ 981 0764 4FF6FF73 		movw	r3, #65535
+ 982 0768 9A42     		cmp	r2, r3
+ 983 076a 06DC     		bgt	.L26
  293:../src/pwm.cpp **** 				{
  294:../src/pwm.cpp **** 				*period = i;
- 979              		.loc 1 294 0
- 980 076c BB68     		ldr	r3, [r7, #8]
- 981 076e FA6A     		ldr	r2, [r7, #44]
- 982 0770 1A60     		str	r2, [r3, #0]
+ 984              		.loc 1 294 0
+ 985 076c BB68     		ldr	r3, [r7, #8]
+ 986 076e FA6A     		ldr	r2, [r7, #44]
+ 987 0770 1A60     		str	r2, [r3, #0]
  295:../src/pwm.cpp **** 				*prescaler = clkdiv;
- 983              		.loc 1 295 0
- 984 0772 7B68     		ldr	r3, [r7, #4]
- 985 0774 BA6A     		ldr	r2, [r7, #40]
- 986 0776 1A60     		str	r2, [r3, #0]
- 987 0778 19E0     		b	.L27
- 988              	.L26:
+ 988              		.loc 1 295 0
+ 989 0772 7B68     		ldr	r3, [r7, #4]
+ 990 0774 BA6A     		ldr	r2, [r7, #40]
+ 991 0776 1A60     		str	r2, [r3, #0]
+ 992 0778 19E0     		b	.L27
+ 993              	.L26:
  282:../src/pwm.cpp **** 	for(iter = 1; iter < max_num; ++iter)
- 989              		.loc 1 282 0
- 990 077a BB6B     		ldr	r3, [r7, #56]
- 991 077c 03F10103 		add	r3, r3, #1
- 992 0780 BB63     		str	r3, [r7, #56]
- 993              	.L24:
+ 994              		.loc 1 282 0
+ 995 077a BB6B     		ldr	r3, [r7, #56]
+ 996 077c 03F10103 		add	r3, r3, #1
+ 997 0780 BB63     		str	r3, [r7, #56]
+ 998              	.L24:
  282:../src/pwm.cpp **** 	for(iter = 1; iter < max_num; ++iter)
- 994              		.loc 1 282 0 is_stmt 0 discriminator 1
- 995 0782 BA6B     		ldr	r2, [r7, #56]
- 996 0784 3B6A     		ldr	r3, [r7, #32]
- 997 0786 9A42     		cmp	r2, r3
- 998 0788 ACBF     		ite	ge
- 999 078a 0023     		movge	r3, #0
- 1000 078c 0123     		movlt	r3, #1
- 1001 078e DBB2     		uxtb	r3, r3
- 1002 0790 002B     		cmp	r3, #0
- 1003 0792 C9D1     		bne	.L28
- 1004 0794 03E0     		b	.L23
- 1005              	.L33:
- 1006 0796 00BF     		.align	2
- 1007              	.L32:
- 1008 0798 4054894C 		.word	1284068416
- 1009              	.L31:
+ 999              		.loc 1 282 0 is_stmt 0 discriminator 1
+ 1000 0782 BA6B     		ldr	r2, [r7, #56]
+ 1001 0784 3B6A     		ldr	r3, [r7, #32]
+ 1002 0786 9A42     		cmp	r2, r3
+ 1003 0788 ACBF     		ite	ge
+ 1004 078a 0023     		movge	r3, #0
+ 1005 078c 0123     		movlt	r3, #1
+ 1006 078e DBB2     		uxtb	r3, r3
+ 1007 0790 002B     		cmp	r3, #0
+ 1008 0792 C9D1     		bne	.L28
+ 1009 0794 03E0     		b	.L23
+ 1010              	.L33:
+ 1011 0796 00BF     		.align	2
+ 1012              	.L32:
+ 1013 0798 4054894C 		.word	1284068416
+ 1014              	.L31:
  285:../src/pwm.cpp **** 		if(divisor == -1){break;}
- 1010              		.loc 1 285 0 is_stmt 1
- 1011 079c 00BF     		nop
- 1012              	.L23:
+ 1015              		.loc 1 285 0 is_stmt 1
+ 1016 079c 00BF     		nop
+ 1017              	.L23:
  280:../src/pwm.cpp **** 	while(i > 1)
- 1013              		.loc 1 280 0 discriminator 1
- 1014 079e FB6A     		ldr	r3, [r7, #44]
- 1015 07a0 012B     		cmp	r3, #1
- 1016 07a2 D4BF     		ite	le
- 1017 07a4 0023     		movle	r3, #0
- 1018 07a6 0123     		movgt	r3, #1
- 1019 07a8 DBB2     		uxtb	r3, r3
- 1020 07aa 002B     		cmp	r3, #0
- 1021 07ac B8D1     		bne	.L29
- 1022              	.L27:
- 1023 07ae B546     		mov	sp, r6
- 1024              	.LBE8:
+ 1018              		.loc 1 280 0 discriminator 1
+ 1019 079e FB6A     		ldr	r3, [r7, #44]
+ 1020 07a0 012B     		cmp	r3, #1
+ 1021 07a2 D4BF     		ite	le
+ 1022 07a4 0023     		movle	r3, #0
+ 1023 07a6 0123     		movgt	r3, #1
+ 1024 07a8 DBB2     		uxtb	r3, r3
+ 1025 07aa 002B     		cmp	r3, #0
+ 1026 07ac B8D1     		bne	.L29
+ 1027              	.L27:
+ 1028 07ae B546     		mov	sp, r6
+ 1029              	.LBE8:
  296:../src/pwm.cpp **** 				return;
  297:../src/pwm.cpp **** 				}
  298:../src/pwm.cpp **** 			}
@@ -1324,30 +1329,33 @@
  300:../src/pwm.cpp **** 	}
  301:../src/pwm.cpp **** 	}
  302:../src/pwm.cpp **** }
- 1025              		.loc 1 302 0
- 1026 07b0 07F14407 		add	r7, r7, #68
- 1027 07b4 BD46     		mov	sp, r7
- 1028 07b6 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, sl, fp, pc}
- 1029              		.cfi_endproc
- 1030              	.LFE117:
- 1032              	.Letext0:
- 1033              		.file 2 "/home/aghosh01/gcc-arm-none-eabi-4_7-2012q4/bin/../lib/gcc/arm-none-eabi/4.7.3/../../../.
- 1034              		.file 3 "/home/aghosh01/git/Trinity2013/STM32F3x/inc/stm32f30x.h"
- 1035              		.file 4 "/home/aghosh01/git/Trinity2013/STM32F3x/inc/stm32f30x_gpio.h"
- 1036              		.file 5 "/home/aghosh01/git/Trinity2013/STM32F3x/inc/stm32f30x_tim.h"
- 1037              		.file 6 "/home/aghosh01/git/Trinity2013/STM32F3x/inc/core_cm4.h"
+ 1030              		.loc 1 302 0
+ 1031 07b0 07F14407 		add	r7, r7, #68
+ 1032 07b4 BD46     		mov	sp, r7
+ 1033 07b6 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, sl, fp, pc}
+ 1034              		.cfi_endproc
+ 1035              	.LFE117:
+ 1037              	.Letext0:
+ 1038              		.file 2 "/home/aghosh01/gcc-arm-none-eabi-4_7-2012q4/bin/../lib/gcc/arm-none-eabi/4.7.3/../../../.
+ 1039              		.file 3 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x.h"
+ 1040              		.file 4 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_gpio.h"
+ 1041              		.file 5 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_tim.h"
+ 1042              		.file 6 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h"
+ 1043              		.file 7 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cm4.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 pwm.cpp
-     /tmp/cc8H3vH1.s:19     .text:00000000 $t
-     /tmp/cc8H3vH1.s:24     .text:00000000 _Z13pwm_out1_initt
-     /tmp/cc8H3vH1.s:644    .text:000004d8 _Z15config_pwm_freqiPiS_
-     /tmp/cc8H3vH1.s:181    .text:00000154 _Z11pwm1_outputf
-     /tmp/cc8H3vH1.s:229    .text:00000198 _Z13pwm_out2_initt
-     /tmp/cc8H3vH1.s:385    .text:000002ec _Z11pwm2_outputf
-     /tmp/cc8H3vH1.s:433    .text:00000330 _Z13pwm_out3_initt
-     /tmp/cc8H3vH1.s:594    .text:00000494 _Z11pwm3_outputf
-     /tmp/cc8H3vH1.s:1008   .text:00000798 $d
-     /tmp/cc8H3vH1.s:1011   .text:0000079c $t
+     /tmp/ccT32AAg.s:20     .bss:00000000 $d
+     /tmp/ccT32AAg.s:21     .bss:00000000 _ZL5stack
+     /tmp/ccT32AAg.s:24     .text:00000000 $t
+     /tmp/ccT32AAg.s:29     .text:00000000 _Z13pwm_out1_initt
+     /tmp/ccT32AAg.s:649    .text:000004d8 _Z15config_pwm_freqiPiS_
+     /tmp/ccT32AAg.s:186    .text:00000154 _Z11pwm1_outputf
+     /tmp/ccT32AAg.s:234    .text:00000198 _Z13pwm_out2_initt
+     /tmp/ccT32AAg.s:390    .text:000002ec _Z11pwm2_outputf
+     /tmp/ccT32AAg.s:438    .text:00000330 _Z13pwm_out3_initt
+     /tmp/ccT32AAg.s:599    .text:00000494 _Z11pwm3_outputf
+     /tmp/ccT32AAg.s:1013   .text:00000798 $d
+     /tmp/ccT32AAg.s:1016   .text:0000079c $t
                      .debug_frame:00000010 $d
                            .group:00000000 wm4.1.934603b1d669cb2b32fd4cb6dd11b673
                            .group:00000000 wm4.common_headers.h.9.a77b7af68303fe0609f9dd844a078e2a
