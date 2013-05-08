@@ -66,13 +66,11 @@ volatile int led_iter;
 volatile int led_matrix[7] = {GPIO_Pin_9, GPIO_Pin_8, GPIO_Pin_15, GPIO_Pin_13,
 										GPIO_Pin_12, GPIO_Pin_11, GPIO_Pin_10};
 
-// Initialize all encoder data structures to zero:
-
 int current_process;
 process_block process_list[MAX_NUM_PROCESSES];
-process_block pList;
+int num_processes_active, active_task, nextProc;
 
-int task1_iter, task2_iter;
+int task1_iter, task2_iter, task3_iter, pc;
 
 uint32_t addrVal;
 
@@ -80,7 +78,13 @@ void task1(void)
 {
 	while(1)
 	{
-		++task1_iter;
+		GPIO_WriteBit(GPIOE, GPIO_Pin_8, Bit_SET);
+		while(task1_iter < 1000000)
+		{
+			++task1_iter;
+		}
+		task1_iter = 0;
+		GPIO_WriteBit(GPIOE, GPIO_Pin_8, Bit_RESET);
 		yield_time();
 	}
 }
@@ -89,26 +93,111 @@ void task2(void)
 {
 	while(1)
 	{
-		++task2_iter;
+		GPIO_WriteBit(GPIOE, GPIO_Pin_9, Bit_SET);
+		while(task2_iter < 1000000)
+		{
+			++task2_iter;
+		}
+		task2_iter = 0;
+		GPIO_WriteBit(GPIOE, GPIO_Pin_9, Bit_RESET);
 		yield_time();
 	}
 }
+
+void task3(void)
+{
+	while(1)
+	{
+		GPIO_WriteBit(GPIOE, GPIO_Pin_15, Bit_SET);
+		while(task3_iter < 1000000)
+		{
+			++task3_iter;
+		}
+		task3_iter = 0;
+//		asm volatile ("mov %[outval], PC" : [outval] "=r" (process_list[active_task].process_pc));
+//		process_list[active_task].process_pc += sizeof(os_delay_ms);
+//		os_delay_ms(200);
+//		while(task3_iter < 1000)
+//		{
+//			++task3_iter;
+//		}
+//		task3_iter = 0;
+		GPIO_WriteBit(GPIOE, GPIO_Pin_15, Bit_RESET);
+		yield_time();
+	}
+}
+
+void GPIO_init(void);
 
 int main(void)
 {
 	SystemInit(); // Set up clocks/PLL/et. al
 
 	UART1_init(); // Debug bridge
+	GPIO_init();
 
 	task1_iter = 0;
 	task2_iter = 0;
 
-	process_list[0].taskPointer = task1;
-	process_list[1].taskPointer = task2;
+//	process_list[0].taskPointer = task1;
+//	process_list[1].taskPointer = task2;
 
-	OS_init(&pList);
+	OS_init();
+	create_task(task1);
+	create_task(task2);
+	create_task(task3);
+
+	yield_time(); // Kick us into the first task
 
 	while(true);
 
 	return 0; // We should never manage to get here...
+}
+
+void timer_tick_ISR_init(void)
+{
+	NVIC_InitTypeDef nv;
+	TIM_TimeBaseInitTypeDef TIM17_init;
+
+	nv.NVIC_IRQChannel = TIM1_TRG_COM_TIM17_IRQn;
+	nv.NVIC_IRQChannelPreemptionPriority = 0;
+	nv.NVIC_IRQChannelSubPriority = 0;
+	nv.NVIC_IRQChannelCmd = ENABLE;
+
+	NVIC_Init(&nv);
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM17, ENABLE);
+
+	/*
+	 * UPDATE_FREQUENCY = TIM_CLK/[(PRESCALER+1)(ARR+1)(REPCOUNTER+1)]
+	 * 	  Prescaler -> PRESCALER
+	 * 	  Period -> ARR
+	 * 	  RepetitionCounter -> REPCOUNTER
+	 */
+
+	TIM17_init.TIM_Period = (10*DT_OS_TICK)-1;
+	TIM17_init.TIM_Prescaler = 7199;
+	TIM17_init.TIM_RepetitionCounter = 0;
+	TIM17_init.TIM_ClockDivision = 0;
+	TIM17_init.TIM_CounterMode = TIM_CounterMode_Up;
+
+	TIM_TimeBaseInit(TIM17, &TIM17_init);
+
+	TIM_ITConfig(TIM17, TIM_IT_Update, ENABLE);
+	TIM_Cmd(TIM17, ENABLE);
+}
+
+void GPIO_init(void)
+{
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE);
+
+	GPIO_InitTypeDef a;
+
+	a.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_15;
+	a.GPIO_Mode = GPIO_Mode_OUT;
+	a.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	a.GPIO_OType = GPIO_OType_PP;
+	a.GPIO_Speed = GPIO_Speed_Level_2;
+
+	GPIO_Init(GPIOE, &a);
 }

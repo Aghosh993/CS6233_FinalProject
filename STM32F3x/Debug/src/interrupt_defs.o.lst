@@ -22,10 +22,10 @@
   22 0000 00000000 		.space	4
   23              		.text
   24              		.align	2
-  25              		.global	SVC_Handler
+  25              		.global	TIM1_TRG_COM_TIM17_IRQHandler
   26              		.thumb
   27              		.thumb_func
-  29              	SVC_Handler:
+  29              	TIM1_TRG_COM_TIM17_IRQHandler:
   30              	.LFB111:
   31              		.file 1 "../src/interrupt_defs.cpp"
    1:../src/interrupt_defs.cpp **** /*
@@ -46,352 +46,895 @@
   16:../src/interrupt_defs.cpp **** extern uint32_t msp_res;
   17:../src/interrupt_defs.cpp **** extern int current_process;
   18:../src/interrupt_defs.cpp **** extern process_block process_list[MAX_NUM_PROCESSES];
-  19:../src/interrupt_defs.cpp **** extern void nextTask();
+  19:../src/interrupt_defs.cpp **** extern int num_processes_active, active_task, nextProc;
   20:../src/interrupt_defs.cpp **** 
-  21:../src/interrupt_defs.cpp **** extern uint32_t addrVal;
+  21:../src/interrupt_defs.cpp **** extern void nextTask();
   22:../src/interrupt_defs.cpp **** 
-  23:../src/interrupt_defs.cpp **** extern void *v;
-  24:../src/interrupt_defs.cpp **** extern void *(*p)(void*);
-  25:../src/interrupt_defs.cpp **** 
-  26:../src/interrupt_defs.cpp **** 	void SVC_Handler(void)
-  27:../src/interrupt_defs.cpp **** 	{
-  32              		.loc 1 27 0
+  23:../src/interrupt_defs.cpp **** extern uint32_t addrVal;
+  24:../src/interrupt_defs.cpp **** 
+  25:../src/interrupt_defs.cpp **** extern void *v;
+  26:../src/interrupt_defs.cpp **** extern void *(*p)(void*);
+  27:../src/interrupt_defs.cpp **** 
+  28:../src/interrupt_defs.cpp **** 	void TIM1_TRG_COM_TIM17_IRQHandler(void)
+  29:../src/interrupt_defs.cpp **** 	{
+  32              		.loc 1 29 0
   33              		.cfi_startproc
-  34              		@ args = 0, pretend = 0, frame = 0
+  34              		@ args = 0, pretend = 0, frame = 8
   35              		@ frame_needed = 1, uses_anonymous_args = 0
-  36              		@ link register save eliminated.
-  37 0000 80B4     		push	{r7}
-  38              	.LCFI0:
-  39              		.cfi_def_cfa_offset 4
-  40              		.cfi_offset 7, -4
-  41 0002 00AF     		add	r7, sp, #0
+  36 0000 80B5     		push	{r7, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 7, -8
+  40              		.cfi_offset 14, -4
+  41 0002 82B0     		sub	sp, sp, #8
   42              	.LCFI1:
-  43              		.cfi_def_cfa_register 7
-  28:../src/interrupt_defs.cpp **** 		++current_process;
-  44              		.loc 1 28 0
-  45 0004 40F20003 		movw	r3, #:lower16:current_process
-  46 0008 C0F20003 		movt	r3, #:upper16:current_process
-  47 000c 1B68     		ldr	r3, [r3, #0]
-  48 000e 03F10102 		add	r2, r3, #1
-  49 0012 40F20003 		movw	r3, #:lower16:current_process
-  50 0016 C0F20003 		movt	r3, #:upper16:current_process
-  51 001a 1A60     		str	r2, [r3, #0]
-  29:../src/interrupt_defs.cpp **** 		if(current_process >= MAX_NUM_PROCESSES)
-  52              		.loc 1 29 0
-  53 001c 40F20003 		movw	r3, #:lower16:current_process
-  54 0020 C0F20003 		movt	r3, #:upper16:current_process
-  55 0024 1B68     		ldr	r3, [r3, #0]
-  56 0026 012B     		cmp	r3, #1
-  57 0028 06DD     		ble	.L2
-  30:../src/interrupt_defs.cpp **** 		{
-  31:../src/interrupt_defs.cpp **** 			current_process = 0;
-  58              		.loc 1 31 0
-  59 002a 40F20003 		movw	r3, #:lower16:current_process
-  60 002e C0F20003 		movt	r3, #:upper16:current_process
-  61 0032 4FF00002 		mov	r2, #0
-  62 0036 1A60     		str	r2, [r3, #0]
-  63              	.L2:
-  32:../src/interrupt_defs.cpp **** 		}
-  33:../src/interrupt_defs.cpp **** 
-  34:../src/interrupt_defs.cpp **** 		addrVal = (uint32_t)(process_list[current_process].taskPointer);//0x8001841;
-  64              		.loc 1 34 0
-  65 0038 40F20003 		movw	r3, #:lower16:current_process
-  66 003c C0F20003 		movt	r3, #:upper16:current_process
-  67 0040 1A68     		ldr	r2, [r3, #0]
-  68 0042 40F20003 		movw	r3, #:lower16:process_list
-  69 0046 C0F20003 		movt	r3, #:upper16:process_list
-  70 004a 4FF09401 		mov	r1, #148
-  71 004e 01FB02F2 		mul	r2, r1, r2
-  72 0052 9B18     		adds	r3, r3, r2
-  73 0054 03F10403 		add	r3, r3, #4
-  74 0058 1B68     		ldr	r3, [r3, #0]
-  75 005a 1A46     		mov	r2, r3
-  76 005c 40F20003 		movw	r3, #:lower16:addrVal
-  77 0060 C0F20003 		movt	r3, #:upper16:addrVal
-  78 0064 1A60     		str	r2, [r3, #0]
-  35:../src/interrupt_defs.cpp **** 		asm volatile ("mov R10, %[something]\n\t" : [something] "=r" (addrVal));
-  79              		.loc 1 35 0
-  80              	@ 35 "../src/interrupt_defs.cpp" 1
-  81 0066 9246     		mov R10, r2
-  82              		
-  83              	@ 0 "" 2
-  84              		.thumb
-  85 0068 40F20003 		movw	r3, #:lower16:addrVal
-  86 006c C0F20003 		movt	r3, #:upper16:addrVal
-  87 0070 1A60     		str	r2, [r3, #0]
-  36:../src/interrupt_defs.cpp **** 
-  37:../src/interrupt_defs.cpp **** 		asm volatile ("bx R10\n\t");
-  88              		.loc 1 37 0
-  89              	@ 37 "../src/interrupt_defs.cpp" 1
-  90 0072 5047     		bx R10
-  91              		
-  92              	@ 0 "" 2
-  38:../src/interrupt_defs.cpp **** 	}
-  93              		.loc 1 38 0
-  94              		.thumb
-  95 0074 BD46     		mov	sp, r7
-  96 0076 80BC     		pop	{r7}
-  97 0078 7047     		bx	lr
-  98              		.cfi_endproc
-  99              	.LFE111:
- 101 007a 00BF     		.align	2
- 102              		.global	PendSV_Handler
- 103              		.thumb
- 104              		.thumb_func
- 106              	PendSV_Handler:
- 107              	.LFB112:
-  39:../src/interrupt_defs.cpp **** 
-  40:../src/interrupt_defs.cpp **** 	void PendSV_Handler(void)
-  41:../src/interrupt_defs.cpp **** 	{
- 108              		.loc 1 41 0
- 109              		.cfi_startproc
- 110              		@ args = 0, pretend = 0, frame = 0
- 111              		@ frame_needed = 1, uses_anonymous_args = 0
- 112              		@ link register save eliminated.
- 113 007c 80B4     		push	{r7}
- 114              	.LCFI2:
- 115              		.cfi_def_cfa_offset 4
- 116              		.cfi_offset 7, -4
- 117 007e 00AF     		add	r7, sp, #0
- 118              	.LCFI3:
- 119              		.cfi_def_cfa_register 7
-  42:../src/interrupt_defs.cpp **** 
-  43:../src/interrupt_defs.cpp **** 		SCB->ICSR |= (1<<27);
- 120              		.loc 1 43 0
- 121 0080 4FF46D43 		mov	r3, #60672
- 122 0084 CEF20003 		movt	r3, 57344
- 123 0088 4FF46D42 		mov	r2, #60672
- 124 008c CEF20002 		movt	r2, 57344
- 125 0090 5268     		ldr	r2, [r2, #4]
- 126 0092 42F00062 		orr	r2, r2, #134217728
- 127 0096 5A60     		str	r2, [r3, #4]
-  44:../src/interrupt_defs.cpp **** 		asm volatile ("svc 1");	// To kick us into SVC handler
- 128              		.loc 1 44 0
- 129              	@ 44 "../src/interrupt_defs.cpp" 1
- 130 0098 01DF     		svc 1
- 131              	@ 0 "" 2
-  45:../src/interrupt_defs.cpp **** 	}
- 132              		.loc 1 45 0
- 133              		.thumb
- 134 009a BD46     		mov	sp, r7
- 135 009c 80BC     		pop	{r7}
- 136 009e 7047     		bx	lr
+  43              		.cfi_def_cfa_offset 16
+  44 0004 00AF     		add	r7, sp, #0
+  45              	.LCFI2:
+  46              		.cfi_def_cfa_register 7
+  47              	.LBB6:
+  30:../src/interrupt_defs.cpp **** 		TIM_ClearITPendingBit(TIM17, TIM_IT_Update);
+  48              		.loc 1 30 0
+  49 0006 4FF49040 		mov	r0, #18432
+  50 000a C4F20100 		movt	r0, 16385
+  51 000e 4FF00101 		mov	r1, #1
+  52 0012 FFF7FEFF 		bl	TIM_ClearITPendingBit
+  31:../src/interrupt_defs.cpp **** 		int i = 0;
+  53              		.loc 1 31 0
+  54 0016 4FF00003 		mov	r3, #0
+  55 001a 7B60     		str	r3, [r7, #4]
+  32:../src/interrupt_defs.cpp **** 		for(i=0; i < num_processes_active; ++i)
+  56              		.loc 1 32 0
+  57 001c 4FF00003 		mov	r3, #0
+  58 0020 7B60     		str	r3, [r7, #4]
+  59 0022 4FE0     		b	.L2
+  60              	.L4:
+  33:../src/interrupt_defs.cpp **** 		{
+  34:../src/interrupt_defs.cpp **** 			if(process_list[i].delayMS > 0)
+  61              		.loc 1 34 0
+  62 0024 40F20003 		movw	r3, #:lower16:process_list
+  63 0028 C0F20003 		movt	r3, #:upper16:process_list
+  64 002c 7A68     		ldr	r2, [r7, #4]
+  65 002e 4FF09401 		mov	r1, #148
+  66 0032 01FB02F2 		mul	r2, r1, r2
+  67 0036 9B18     		adds	r3, r3, r2
+  68 0038 03F19003 		add	r3, r3, #144
+  69 003c 1B68     		ldr	r3, [r3, #0]
+  70 003e 002B     		cmp	r3, #0
+  71 0040 3CDD     		ble	.L3
+  35:../src/interrupt_defs.cpp **** 			{
+  36:../src/interrupt_defs.cpp **** 				--process_list[i].delayMS;
+  72              		.loc 1 36 0
+  73 0042 40F20003 		movw	r3, #:lower16:process_list
+  74 0046 C0F20003 		movt	r3, #:upper16:process_list
+  75 004a 7A68     		ldr	r2, [r7, #4]
+  76 004c 4FF09401 		mov	r1, #148
+  77 0050 01FB02F2 		mul	r2, r1, r2
+  78 0054 9B18     		adds	r3, r3, r2
+  79 0056 03F19003 		add	r3, r3, #144
+  80 005a 1B68     		ldr	r3, [r3, #0]
+  81 005c 03F1FF32 		add	r2, r3, #-1
+  82 0060 40F20003 		movw	r3, #:lower16:process_list
+  83 0064 C0F20003 		movt	r3, #:upper16:process_list
+  84 0068 7968     		ldr	r1, [r7, #4]
+  85 006a 4FF09400 		mov	r0, #148
+  86 006e 00FB01F1 		mul	r1, r0, r1
+  87 0072 5B18     		adds	r3, r3, r1
+  88 0074 03F19003 		add	r3, r3, #144
+  89 0078 1A60     		str	r2, [r3, #0]
+  37:../src/interrupt_defs.cpp **** 				if(process_list[i].delayMS == 0)
+  90              		.loc 1 37 0
+  91 007a 40F20003 		movw	r3, #:lower16:process_list
+  92 007e C0F20003 		movt	r3, #:upper16:process_list
+  93 0082 7A68     		ldr	r2, [r7, #4]
+  94 0084 4FF09401 		mov	r1, #148
+  95 0088 01FB02F2 		mul	r2, r1, r2
+  96 008c 9B18     		adds	r3, r3, r2
+  97 008e 03F19003 		add	r3, r3, #144
+  98 0092 1B68     		ldr	r3, [r3, #0]
+  99 0094 002B     		cmp	r3, #0
+ 100 0096 11D1     		bne	.L3
+  38:../src/interrupt_defs.cpp **** 				{
+  39:../src/interrupt_defs.cpp **** 					nextProc = i;
+ 101              		.loc 1 39 0
+ 102 0098 40F20003 		movw	r3, #:lower16:nextProc
+ 103 009c C0F20003 		movt	r3, #:upper16:nextProc
+ 104 00a0 7A68     		ldr	r2, [r7, #4]
+ 105 00a2 1A60     		str	r2, [r3, #0]
+  40:../src/interrupt_defs.cpp **** 					SCB->ICSR |= (1<<28);
+ 106              		.loc 1 40 0
+ 107 00a4 4FF46D43 		mov	r3, #60672
+ 108 00a8 CEF20003 		movt	r3, 57344
+ 109 00ac 4FF46D42 		mov	r2, #60672
+ 110 00b0 CEF20002 		movt	r2, 57344
+ 111 00b4 5268     		ldr	r2, [r2, #4]
+ 112 00b6 42F08052 		orr	r2, r2, #268435456
+ 113 00ba 5A60     		str	r2, [r3, #4]
+ 114              	.L3:
+  32:../src/interrupt_defs.cpp **** 		for(i=0; i < num_processes_active; ++i)
+ 115              		.loc 1 32 0
+ 116 00bc 7B68     		ldr	r3, [r7, #4]
+ 117 00be 03F10103 		add	r3, r3, #1
+ 118 00c2 7B60     		str	r3, [r7, #4]
+ 119              	.L2:
+  32:../src/interrupt_defs.cpp **** 		for(i=0; i < num_processes_active; ++i)
+ 120              		.loc 1 32 0 is_stmt 0 discriminator 1
+ 121 00c4 40F20003 		movw	r3, #:lower16:num_processes_active
+ 122 00c8 C0F20003 		movt	r3, #:upper16:num_processes_active
+ 123 00cc 1B68     		ldr	r3, [r3, #0]
+ 124 00ce 7A68     		ldr	r2, [r7, #4]
+ 125 00d0 9A42     		cmp	r2, r3
+ 126 00d2 ACBF     		ite	ge
+ 127 00d4 0023     		movge	r3, #0
+ 128 00d6 0123     		movlt	r3, #1
+ 129 00d8 DBB2     		uxtb	r3, r3
+ 130 00da 002B     		cmp	r3, #0
+ 131 00dc A2D1     		bne	.L4
+ 132              	.LBE6:
+  41:../src/interrupt_defs.cpp **** 				}
+  42:../src/interrupt_defs.cpp **** 			}
+  43:../src/interrupt_defs.cpp **** 		}
+  44:../src/interrupt_defs.cpp **** 	}
+ 133              		.loc 1 44 0 is_stmt 1
+ 134 00de 07F10807 		add	r7, r7, #8
+ 135 00e2 BD46     		mov	sp, r7
+ 136 00e4 80BD     		pop	{r7, pc}
  137              		.cfi_endproc
- 138              	.LFE112:
- 140              		.align	2
- 141              		.global	SysTick_Handler
+ 138              	.LFE111:
+ 140 00e6 00BF     		.align	2
+ 141              		.global	SVC_Handler
  142              		.thumb
  143              		.thumb_func
- 145              	SysTick_Handler:
- 146              	.LFB113:
-  46:../src/interrupt_defs.cpp **** 
-  47:../src/interrupt_defs.cpp **** 	void SysTick_Handler(void)
-  48:../src/interrupt_defs.cpp **** 	{
- 147              		.loc 1 48 0
+ 145              	SVC_Handler:
+ 146              	.LFB112:
+  45:../src/interrupt_defs.cpp **** 
+  46:../src/interrupt_defs.cpp **** 	void SVC_Handler(void)
+  47:../src/interrupt_defs.cpp **** 	{
+ 147              		.loc 1 47 0
  148              		.cfi_startproc
  149              		@ args = 0, pretend = 0, frame = 0
  150              		@ frame_needed = 1, uses_anonymous_args = 0
  151              		@ link register save eliminated.
- 152 00a0 80B4     		push	{r7}
- 153              	.LCFI4:
+ 152 00e8 80B4     		push	{r7}
+ 153              	.LCFI3:
  154              		.cfi_def_cfa_offset 4
  155              		.cfi_offset 7, -4
- 156 00a2 00AF     		add	r7, sp, #0
- 157              	.LCFI5:
+ 156 00ea 00AF     		add	r7, sp, #0
+ 157              	.LCFI4:
  158              		.cfi_def_cfa_register 7
-  49:../src/interrupt_defs.cpp **** 		++current_process;
- 159              		.loc 1 49 0
- 160 00a4 40F20003 		movw	r3, #:lower16:current_process
- 161 00a8 C0F20003 		movt	r3, #:upper16:current_process
- 162 00ac 1B68     		ldr	r3, [r3, #0]
- 163 00ae 03F10102 		add	r2, r3, #1
- 164 00b2 40F20003 		movw	r3, #:lower16:current_process
- 165 00b6 C0F20003 		movt	r3, #:upper16:current_process
- 166 00ba 1A60     		str	r2, [r3, #0]
-  50:../src/interrupt_defs.cpp **** 		if(current_process >= MAX_NUM_PROCESSES)
- 167              		.loc 1 50 0
- 168 00bc 40F20003 		movw	r3, #:lower16:current_process
- 169 00c0 C0F20003 		movt	r3, #:upper16:current_process
- 170 00c4 1B68     		ldr	r3, [r3, #0]
- 171 00c6 012B     		cmp	r3, #1
- 172 00c8 06DD     		ble	.L5
-  51:../src/interrupt_defs.cpp **** 		{
-  52:../src/interrupt_defs.cpp **** 			current_process = 0;
- 173              		.loc 1 52 0
- 174 00ca 40F20003 		movw	r3, #:lower16:current_process
- 175 00ce C0F20003 		movt	r3, #:upper16:current_process
- 176 00d2 4FF00002 		mov	r2, #0
- 177 00d6 1A60     		str	r2, [r3, #0]
- 178              	.L5:
-  53:../src/interrupt_defs.cpp **** 		}
-  54:../src/interrupt_defs.cpp **** 
-  55:../src/interrupt_defs.cpp **** 		addrVal = (uint32_t)(process_list[current_process].taskPointer);//0x8001841;
- 179              		.loc 1 55 0
- 180 00d8 40F20003 		movw	r3, #:lower16:current_process
- 181 00dc C0F20003 		movt	r3, #:upper16:current_process
- 182 00e0 1A68     		ldr	r2, [r3, #0]
- 183 00e2 40F20003 		movw	r3, #:lower16:process_list
- 184 00e6 C0F20003 		movt	r3, #:upper16:process_list
- 185 00ea 4FF09401 		mov	r1, #148
- 186 00ee 01FB02F2 		mul	r2, r1, r2
- 187 00f2 9B18     		adds	r3, r3, r2
- 188 00f4 03F10403 		add	r3, r3, #4
- 189 00f8 1B68     		ldr	r3, [r3, #0]
- 190 00fa 1A46     		mov	r2, r3
- 191 00fc 40F20003 		movw	r3, #:lower16:addrVal
- 192 0100 C0F20003 		movt	r3, #:upper16:addrVal
- 193 0104 1A60     		str	r2, [r3, #0]
-  56:../src/interrupt_defs.cpp **** 		asm volatile ("mov R10, %[something]\n\t" : [something] "=r" (addrVal));
- 194              		.loc 1 56 0
- 195              	@ 56 "../src/interrupt_defs.cpp" 1
- 196 0106 9246     		mov R10, r2
- 197              		
- 198              	@ 0 "" 2
- 199              		.thumb
- 200 0108 40F20003 		movw	r3, #:lower16:addrVal
- 201 010c C0F20003 		movt	r3, #:upper16:addrVal
- 202 0110 1A60     		str	r2, [r3, #0]
-  57:../src/interrupt_defs.cpp **** 
-  58:../src/interrupt_defs.cpp **** 		asm volatile ("bx R10\n\t");
- 203              		.loc 1 58 0
- 204              	@ 58 "../src/interrupt_defs.cpp" 1
- 205 0112 5047     		bx R10
- 206              		
- 207              	@ 0 "" 2
-  59:../src/interrupt_defs.cpp **** 	}
- 208              		.loc 1 59 0
- 209              		.thumb
- 210 0114 BD46     		mov	sp, r7
- 211 0116 80BC     		pop	{r7}
- 212 0118 7047     		bx	lr
- 213              		.cfi_endproc
- 214              	.LFE113:
- 216 011a 00BF     		.align	2
- 217              		.global	HardFault_Handler
- 218              		.thumb
- 219              		.thumb_func
- 221              	HardFault_Handler:
- 222              	.LFB114:
-  60:../src/interrupt_defs.cpp **** 
-  61:../src/interrupt_defs.cpp **** 	// Primarily for debug purposes:
+  48:../src/interrupt_defs.cpp **** 		++current_process;
+ 159              		.loc 1 48 0
+ 160 00ec 40F20003 		movw	r3, #:lower16:current_process
+ 161 00f0 C0F20003 		movt	r3, #:upper16:current_process
+ 162 00f4 1B68     		ldr	r3, [r3, #0]
+ 163 00f6 03F10102 		add	r2, r3, #1
+ 164 00fa 40F20003 		movw	r3, #:lower16:current_process
+ 165 00fe C0F20003 		movt	r3, #:upper16:current_process
+ 166 0102 1A60     		str	r2, [r3, #0]
+  49:../src/interrupt_defs.cpp **** 		if(current_process >= num_processes_active)
+ 167              		.loc 1 49 0
+ 168 0104 40F20003 		movw	r3, #:lower16:current_process
+ 169 0108 C0F20003 		movt	r3, #:upper16:current_process
+ 170 010c 1A68     		ldr	r2, [r3, #0]
+ 171 010e 40F20003 		movw	r3, #:lower16:num_processes_active
+ 172 0112 C0F20003 		movt	r3, #:upper16:num_processes_active
+ 173 0116 1B68     		ldr	r3, [r3, #0]
+ 174 0118 9A42     		cmp	r2, r3
+ 175 011a 06DB     		blt	.L6
+  50:../src/interrupt_defs.cpp **** 		{
+  51:../src/interrupt_defs.cpp **** 			current_process = 0;
+ 176              		.loc 1 51 0
+ 177 011c 40F20003 		movw	r3, #:lower16:current_process
+ 178 0120 C0F20003 		movt	r3, #:upper16:current_process
+ 179 0124 4FF00002 		mov	r2, #0
+ 180 0128 1A60     		str	r2, [r3, #0]
+ 181              	.L6:
+  52:../src/interrupt_defs.cpp **** 		}
+  53:../src/interrupt_defs.cpp **** 
+  54:../src/interrupt_defs.cpp **** 		addrVal = (uint32_t)(process_list[current_process].taskPointer);//0x8001841;
+ 182              		.loc 1 54 0
+ 183 012a 40F20003 		movw	r3, #:lower16:current_process
+ 184 012e C0F20003 		movt	r3, #:upper16:current_process
+ 185 0132 1A68     		ldr	r2, [r3, #0]
+ 186 0134 40F20003 		movw	r3, #:lower16:process_list
+ 187 0138 C0F20003 		movt	r3, #:upper16:process_list
+ 188 013c 4FF09401 		mov	r1, #148
+ 189 0140 01FB02F2 		mul	r2, r1, r2
+ 190 0144 9B18     		adds	r3, r3, r2
+ 191 0146 03F10403 		add	r3, r3, #4
+ 192 014a 1B68     		ldr	r3, [r3, #0]
+ 193 014c 1A46     		mov	r2, r3
+ 194 014e 40F20003 		movw	r3, #:lower16:addrVal
+ 195 0152 C0F20003 		movt	r3, #:upper16:addrVal
+ 196 0156 1A60     		str	r2, [r3, #0]
+  55:../src/interrupt_defs.cpp **** 		asm volatile ("mov R10, %[something]\n\t" : [something] "=r" (addrVal));
+ 197              		.loc 1 55 0
+ 198              	@ 55 "../src/interrupt_defs.cpp" 1
+ 199 0158 9246     		mov R10, r2
+ 200              		
+ 201              	@ 0 "" 2
+ 202              		.thumb
+ 203 015a 40F20003 		movw	r3, #:lower16:addrVal
+ 204 015e C0F20003 		movt	r3, #:upper16:addrVal
+ 205 0162 1A60     		str	r2, [r3, #0]
+  56:../src/interrupt_defs.cpp **** 
+  57:../src/interrupt_defs.cpp **** 		asm volatile ("bx R10\n\t");
+ 206              		.loc 1 57 0
+ 207              	@ 57 "../src/interrupt_defs.cpp" 1
+ 208 0164 5047     		bx R10
+ 209              		
+ 210              	@ 0 "" 2
+  58:../src/interrupt_defs.cpp **** 	}
+ 211              		.loc 1 58 0
+ 212              		.thumb
+ 213 0166 BD46     		mov	sp, r7
+ 214 0168 80BC     		pop	{r7}
+ 215 016a 7047     		bx	lr
+ 216              		.cfi_endproc
+ 217              	.LFE112:
+ 219              		.align	2
+ 220              		.global	PendSV_Handler
+ 221              		.thumb
+ 222              		.thumb_func
+ 224              	PendSV_Handler:
+ 225              	.LFB113:
+  59:../src/interrupt_defs.cpp **** 
+  60:../src/interrupt_defs.cpp **** 	void PendSV_Handler(void)
+  61:../src/interrupt_defs.cpp **** 	{
+ 226              		.loc 1 61 0
+ 227              		.cfi_startproc
+ 228              		@ args = 0, pretend = 0, frame = 0
+ 229              		@ frame_needed = 1, uses_anonymous_args = 0
+ 230              		@ link register save eliminated.
+ 231 016c 80B4     		push	{r7}
+ 232              	.LCFI5:
+ 233              		.cfi_def_cfa_offset 4
+ 234              		.cfi_offset 7, -4
+ 235 016e 00AF     		add	r7, sp, #0
+ 236              	.LCFI6:
+ 237              		.cfi_def_cfa_register 7
   62:../src/interrupt_defs.cpp **** 
-  63:../src/interrupt_defs.cpp **** 	void HardFault_Handler(void)
-  64:../src/interrupt_defs.cpp **** 	{
- 223              		.loc 1 64 0
- 224              		.cfi_startproc
- 225              		@ args = 0, pretend = 0, frame = 0
- 226              		@ frame_needed = 1, uses_anonymous_args = 0
- 227              		@ link register save eliminated.
- 228 011c 80B4     		push	{r7}
- 229              	.LCFI6:
- 230              		.cfi_def_cfa_offset 4
- 231              		.cfi_offset 7, -4
- 232 011e 00AF     		add	r7, sp, #0
- 233              	.LCFI7:
- 234              		.cfi_def_cfa_register 7
- 235              	.L7:
-  65:../src/interrupt_defs.cpp **** 		while(1);
- 236              		.loc 1 65 0 discriminator 1
- 237 0120 FEE7     		b	.L7
- 238              		.cfi_endproc
- 239              	.LFE114:
- 241 0122 00BF     		.align	2
- 242              		.global	MemManage_Handler
- 243              		.thumb
- 244              		.thumb_func
- 246              	MemManage_Handler:
- 247              	.LFB115:
-  66:../src/interrupt_defs.cpp **** 	}
-  67:../src/interrupt_defs.cpp **** 	void MemManage_Handler(void)
-  68:../src/interrupt_defs.cpp **** 	{
- 248              		.loc 1 68 0
- 249              		.cfi_startproc
- 250              		@ args = 0, pretend = 0, frame = 0
- 251              		@ frame_needed = 1, uses_anonymous_args = 0
- 252              		@ link register save eliminated.
- 253 0124 80B4     		push	{r7}
- 254              	.LCFI8:
- 255              		.cfi_def_cfa_offset 4
- 256              		.cfi_offset 7, -4
- 257 0126 00AF     		add	r7, sp, #0
- 258              	.LCFI9:
- 259              		.cfi_def_cfa_register 7
- 260              	.L9:
-  69:../src/interrupt_defs.cpp **** 		while(1);
- 261              		.loc 1 69 0 discriminator 1
- 262 0128 FEE7     		b	.L9
- 263              		.cfi_endproc
- 264              	.LFE115:
- 266 012a 00BF     		.align	2
- 267              		.global	BusFault_Handler
- 268              		.thumb
- 269              		.thumb_func
- 271              	BusFault_Handler:
- 272              	.LFB116:
-  70:../src/interrupt_defs.cpp **** 	}
-  71:../src/interrupt_defs.cpp **** 	void BusFault_Handler(void)
+  63:../src/interrupt_defs.cpp **** 		SCB->ICSR |= (1<<27);
+ 238              		.loc 1 63 0
+ 239 0170 4FF46D43 		mov	r3, #60672
+ 240 0174 CEF20003 		movt	r3, 57344
+ 241 0178 4FF46D42 		mov	r2, #60672
+ 242 017c CEF20002 		movt	r2, 57344
+ 243 0180 5268     		ldr	r2, [r2, #4]
+ 244 0182 42F00062 		orr	r2, r2, #134217728
+ 245 0186 5A60     		str	r2, [r3, #4]
+  64:../src/interrupt_defs.cpp **** 		addrVal = (uint32_t)(process_list[nextProc].process_pc);//0x8001841;
+ 246              		.loc 1 64 0
+ 247 0188 40F20003 		movw	r3, #:lower16:nextProc
+ 248 018c C0F20003 		movt	r3, #:upper16:nextProc
+ 249 0190 1A68     		ldr	r2, [r3, #0]
+ 250 0192 40F20003 		movw	r3, #:lower16:process_list
+ 251 0196 C0F20003 		movt	r3, #:upper16:process_list
+ 252 019a 4FF09401 		mov	r1, #148
+ 253 019e 01FB02F2 		mul	r2, r1, r2
+ 254 01a2 9B18     		adds	r3, r3, r2
+ 255 01a4 03F10C03 		add	r3, r3, #12
+ 256 01a8 1A68     		ldr	r2, [r3, #0]
+ 257 01aa 40F20003 		movw	r3, #:lower16:addrVal
+ 258 01ae C0F20003 		movt	r3, #:upper16:addrVal
+ 259 01b2 1A60     		str	r2, [r3, #0]
+  65:../src/interrupt_defs.cpp **** 		active_task = nextProc;
+ 260              		.loc 1 65 0
+ 261 01b4 40F20003 		movw	r3, #:lower16:nextProc
+ 262 01b8 C0F20003 		movt	r3, #:upper16:nextProc
+ 263 01bc 1A68     		ldr	r2, [r3, #0]
+ 264 01be 40F20003 		movw	r3, #:lower16:active_task
+ 265 01c2 C0F20003 		movt	r3, #:upper16:active_task
+ 266 01c6 1A60     		str	r2, [r3, #0]
+ 267              	.LBB7:
+ 268              	.LBB8:
+ 269              		.file 2 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h"
+   1:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /**************************************************************************//**
+   2:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * @file     core_cmFunc.h
+   3:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * @brief    CMSIS Cortex-M Core Function Access Header File
+   4:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * @version  V3.00
+   5:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * @date     19. January 2012
+   6:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  *
+   7:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * @note
+   8:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * Copyright (C) 2009-2012 ARM Limited. All rights reserved.
+   9:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  *
+  10:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * @par
+  11:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * ARM Limited (ARM) is supplying this software for use with Cortex-M 
+  12:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * processor based microcontrollers.  This file can be freely distributed 
+  13:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * within development tools that are supporting such ARM based processors. 
+  14:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  *
+  15:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * @par
+  16:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+  17:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+  18:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+  19:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+  20:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+  21:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  *
+  22:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  ******************************************************************************/
+  23:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  24:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #ifndef __CORE_CMFUNC_H
+  25:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #define __CORE_CMFUNC_H
+  26:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  27:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  28:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /* ###########################  Core Function Access  ########################### */
+  29:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \ingroup  CMSIS_Core_FunctionInterface   
+  30:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+  31:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   @{
+  32:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+  33:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  34:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #if   defined ( __CC_ARM ) /*------------------RealView Compiler -----------------*/
+  35:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /* ARM armcc specific functions */
+  36:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  37:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #if (__ARMCC_VERSION < 400677)
+  38:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   #error "Please use ARM Compiler Toolchain V4.0.677 or later!"
+  39:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #endif
+  40:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  41:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /* intrinsic void __enable_irq();     */
+  42:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /* intrinsic void __disable_irq();    */
+  43:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  44:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get Control Register
+  45:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  46:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the content of the Control Register.
+  47:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  48:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               Control Register value
+  49:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+  50:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_CONTROL(void)
+  51:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+  52:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regControl         __ASM("control");
+  53:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regControl);
+  54:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+  55:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  56:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  57:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Set Control Register
+  58:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  59:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function writes the given value to the Control Register.
+  60:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  61:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \param [in]    control  Control Register value to set
+  62:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+  63:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE void __set_CONTROL(uint32_t control)
+  64:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+  65:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regControl         __ASM("control");
+  66:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __regControl = control;
+  67:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+  68:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  69:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  70:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get IPSR Register
+  71:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  72:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the content of the IPSR Register.
+  73:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  74:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               IPSR Register value
+  75:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+  76:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_IPSR(void)
+  77:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+  78:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regIPSR          __ASM("ipsr");
+  79:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regIPSR);
+  80:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+  81:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  82:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  83:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get APSR Register
+  84:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  85:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the content of the APSR Register.
+  86:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  87:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               APSR Register value
+  88:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+  89:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_APSR(void)
+  90:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+  91:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regAPSR          __ASM("apsr");
+  92:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regAPSR);
+  93:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+  94:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  95:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  96:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get xPSR Register
+  97:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+  98:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the content of the xPSR Register.
+  99:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 100:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               xPSR Register value
+ 101:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 102:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_xPSR(void)
+ 103:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 104:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regXPSR          __ASM("xpsr");
+ 105:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regXPSR);
+ 106:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 107:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 108:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 109:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get Process Stack Pointer
+ 110:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 111:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the current value of the Process Stack Pointer (PSP).
+ 112:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 113:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               PSP Register value
+ 114:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 115:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_PSP(void)
+ 116:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 117:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regProcessStackPointer  __ASM("psp");
+ 118:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regProcessStackPointer);
+ 119:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 120:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 121:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 122:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Set Process Stack Pointer
+ 123:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 124:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function assigns the given value to the Process Stack Pointer (PSP).
+ 125:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 126:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 127:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 128:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE void __set_PSP(uint32_t topOfProcStack)
+ 129:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 130:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regProcessStackPointer  __ASM("psp");
+ 131:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __regProcessStackPointer = topOfProcStack;
+ 132:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 133:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 134:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 135:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get Main Stack Pointer
+ 136:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 137:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the current value of the Main Stack Pointer (MSP).
+ 138:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 139:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               MSP Register value
+ 140:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 141:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_MSP(void)
+ 142:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 143:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regMainStackPointer     __ASM("msp");
+ 144:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regMainStackPointer);
+ 145:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 146:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 147:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 148:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Set Main Stack Pointer
+ 149:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 150:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function assigns the given value to the Main Stack Pointer (MSP).
+ 151:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 152:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 153:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 154:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE void __set_MSP(uint32_t topOfMainStack)
+ 155:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 156:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regMainStackPointer     __ASM("msp");
+ 157:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __regMainStackPointer = topOfMainStack;
+ 158:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 159:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 160:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 161:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get Priority Mask
+ 162:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 163:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the current state of the priority mask bit from the Priority Mask Registe
+ 164:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 165:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               Priority Mask value
+ 166:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 167:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_PRIMASK(void)
+ 168:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 169:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regPriMask         __ASM("primask");
+ 170:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regPriMask);
+ 171:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 172:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 173:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 174:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Set Priority Mask
+ 175:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 176:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function assigns the given value to the Priority Mask Register.
+ 177:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 178:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \param [in]    priMask  Priority Mask
+ 179:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 180:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE void __set_PRIMASK(uint32_t priMask)
+ 181:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 182:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regPriMask         __ASM("primask");
+ 183:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __regPriMask = (priMask);
+ 184:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 185:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  
+ 186:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 187:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #if       (__CORTEX_M >= 0x03)
+ 188:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 189:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Enable FIQ
+ 190:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 191:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function enables FIQ interrupts by clearing the F-bit in the CPSR.
+ 192:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     Can only be executed in Privileged modes.
+ 193:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 194:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #define __enable_fault_irq                __enable_fiq
+ 195:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 196:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 197:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Disable FIQ
+ 198:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 199:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function disables FIQ interrupts by setting the F-bit in the CPSR.
+ 200:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     Can only be executed in Privileged modes.
+ 201:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 202:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #define __disable_fault_irq               __disable_fiq
+ 203:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 204:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 205:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get Base Priority
+ 206:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 207:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the current value of the Base Priority register.
+ 208:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 209:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               Base Priority register value
+ 210:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 211:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t  __get_BASEPRI(void)
+ 212:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 213:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regBasePri         __ASM("basepri");
+ 214:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regBasePri);
+ 215:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 216:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 217:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 218:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Set Base Priority
+ 219:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 220:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function assigns the given value to the Base Priority register.
+ 221:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 222:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \param [in]    basePri  Base Priority value to set
+ 223:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 224:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE void __set_BASEPRI(uint32_t basePri)
+ 225:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 226:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regBasePri         __ASM("basepri");
+ 227:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __regBasePri = (basePri & 0xff);
+ 228:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 229:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  
+ 230:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 231:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get Fault Mask
+ 232:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 233:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the current value of the Fault Mask register.
+ 234:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 235:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               Fault Mask register value
+ 236:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 237:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_FAULTMASK(void)
+ 238:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 239:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regFaultMask       __ASM("faultmask");
+ 240:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regFaultMask);
+ 241:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 242:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 243:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 244:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Set Fault Mask
+ 245:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 246:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function assigns the given value to the Fault Mask register.
+ 247:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 248:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \param [in]    faultMask  Fault Mask value to set
+ 249:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 250:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE void __set_FAULTMASK(uint32_t faultMask)
+ 251:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 252:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regFaultMask       __ASM("faultmask");
+ 253:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __regFaultMask = (faultMask & (uint32_t)1);
+ 254:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 255:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 256:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #endif /* (__CORTEX_M >= 0x03) */
+ 257:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 258:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 259:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #if       (__CORTEX_M == 0x04)
+ 260:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 261:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Get FPSCR
+ 262:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 263:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function returns the current value of the Floating Point Status/Control register.
+ 264:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 265:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \return               Floating Point Status/Control register value
+ 266:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 267:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE uint32_t __get_FPSCR(void)
+ 268:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 269:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+ 270:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regfpscr         __ASM("fpscr");
+ 271:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   return(__regfpscr);
+ 272:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #else
+ 273:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****    return(0);
+ 274:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #endif
+ 275:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 276:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 277:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 278:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Set FPSCR
+ 279:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 280:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     This function assigns the given value to the Floating Point Status/Control register.
+ 281:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 282:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****     \param [in]    fpscr  Floating Point Status/Control value to set
+ 283:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 284:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __STATIC_INLINE void __set_FPSCR(uint32_t fpscr)
+ 285:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 286:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+ 287:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   register uint32_t __regfpscr         __ASM("fpscr");
+ 288:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __regfpscr = (fpscr);
+ 289:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #endif
+ 290:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** }
+ 291:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 292:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #endif /* (__CORTEX_M == 0x04) */
+ 293:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 294:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 295:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #elif defined ( __ICCARM__ ) /*------------------ ICC Compiler -------------------*/
+ 296:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /* IAR iccarm specific functions */
+ 297:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 298:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #include <cmsis_iar.h>
+ 299:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 300:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 301:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #elif defined ( __TMS470__ ) /*---------------- TI CCS Compiler ------------------*/
+ 302:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /* TI CCS specific functions */
+ 303:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 304:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #include <cmsis_ccs.h>
+ 305:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 306:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 307:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** #elif defined ( __GNUC__ ) /*------------------ GNU Compiler ---------------------*/
+ 308:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /* GNU gcc specific functions */
+ 309:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 310:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** /** \brief  Enable IRQ Interrupts
+ 311:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** 
+ 312:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   This function enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 313:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   Can only be executed in Privileged modes.
+ 314:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****  */
+ 315:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __enable_irq(void)
+ 316:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h **** {
+ 317:/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h ****   __ASM volatile ("cpsie i");
+ 270              		.loc 2 317 0
+ 271              	@ 317 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h" 1
+ 272 01c8 62B6     		cpsie i
+ 273              	@ 0 "" 2
+ 274              		.thumb
+ 275              	.LBE8:
+ 276              	.LBE7:
+  66:../src/interrupt_defs.cpp **** 		__enable_irq();
+  67:../src/interrupt_defs.cpp **** 		asm volatile ("bx %[num]\n\t" : [num] "+r" ((unsigned)addrVal));
+ 277              		.loc 1 67 0
+ 278 01ca 40F20003 		movw	r3, #:lower16:addrVal
+ 279 01ce C0F20003 		movt	r3, #:upper16:addrVal
+ 280 01d2 1B68     		ldr	r3, [r3, #0]
+ 281 01d4 1A46     		mov	r2, r3
+ 282              	@ 67 "../src/interrupt_defs.cpp" 1
+ 283 01d6 1047     		bx r2
+ 284              		
+ 285              	@ 0 "" 2
+ 286              		.thumb
+ 287 01d8 40F20003 		movw	r3, #:lower16:addrVal
+ 288 01dc C0F20003 		movt	r3, #:upper16:addrVal
+ 289 01e0 1A60     		str	r2, [r3, #0]
+  68:../src/interrupt_defs.cpp **** //		asm volatile ("svc 1");	// To kick us into SVC handler
+  69:../src/interrupt_defs.cpp **** 	}
+ 290              		.loc 1 69 0
+ 291 01e2 BD46     		mov	sp, r7
+ 292 01e4 80BC     		pop	{r7}
+ 293 01e6 7047     		bx	lr
+ 294              		.cfi_endproc
+ 295              	.LFE113:
+ 297              		.align	2
+ 298              		.global	SysTick_Handler
+ 299              		.thumb
+ 300              		.thumb_func
+ 302              	SysTick_Handler:
+ 303              	.LFB114:
+  70:../src/interrupt_defs.cpp **** 
+  71:../src/interrupt_defs.cpp **** 	void SysTick_Handler(void)
   72:../src/interrupt_defs.cpp **** 	{
- 273              		.loc 1 72 0
- 274              		.cfi_startproc
- 275              		@ args = 0, pretend = 0, frame = 0
- 276              		@ frame_needed = 1, uses_anonymous_args = 0
- 277              		@ link register save eliminated.
- 278 012c 80B4     		push	{r7}
- 279              	.LCFI10:
- 280              		.cfi_def_cfa_offset 4
- 281              		.cfi_offset 7, -4
- 282 012e 00AF     		add	r7, sp, #0
- 283              	.LCFI11:
- 284              		.cfi_def_cfa_register 7
- 285              	.L11:
-  73:../src/interrupt_defs.cpp **** 		while(1);
- 286              		.loc 1 73 0 discriminator 1
- 287 0130 FEE7     		b	.L11
- 288              		.cfi_endproc
- 289              	.LFE116:
- 291 0132 00BF     		.align	2
- 292              		.global	UsageFault_Handler
- 293              		.thumb
- 294              		.thumb_func
- 296              	UsageFault_Handler:
- 297              	.LFB117:
-  74:../src/interrupt_defs.cpp **** 	}
-  75:../src/interrupt_defs.cpp **** 	void UsageFault_Handler(void)
-  76:../src/interrupt_defs.cpp **** 	{
- 298              		.loc 1 76 0
- 299              		.cfi_startproc
- 300              		@ args = 0, pretend = 0, frame = 0
- 301              		@ frame_needed = 1, uses_anonymous_args = 0
- 302              		@ link register save eliminated.
- 303 0134 80B4     		push	{r7}
- 304              	.LCFI12:
- 305              		.cfi_def_cfa_offset 4
- 306              		.cfi_offset 7, -4
- 307 0136 00AF     		add	r7, sp, #0
- 308              	.LCFI13:
- 309              		.cfi_def_cfa_register 7
- 310              	.L13:
-  77:../src/interrupt_defs.cpp **** 		while(1);
- 311              		.loc 1 77 0 discriminator 1
- 312 0138 FEE7     		b	.L13
- 313              		.cfi_endproc
- 314              	.LFE117:
- 316              	.Letext0:
- 317              		.file 2 "/home/aghosh01/gcc-arm-none-eabi-4_7-2012q4/bin/../lib/gcc/arm-none-eabi/4.7.3/../../../.
- 318              		.file 3 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cm4.h"
- 319              		.file 4 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h"
+ 304              		.loc 1 72 0
+ 305              		.cfi_startproc
+ 306              		@ args = 0, pretend = 0, frame = 0
+ 307              		@ frame_needed = 1, uses_anonymous_args = 0
+ 308              		@ link register save eliminated.
+ 309 01e8 80B4     		push	{r7}
+ 310              	.LCFI7:
+ 311              		.cfi_def_cfa_offset 4
+ 312              		.cfi_offset 7, -4
+ 313 01ea 00AF     		add	r7, sp, #0
+ 314              	.LCFI8:
+ 315              		.cfi_def_cfa_register 7
+  73:../src/interrupt_defs.cpp **** 		++current_process;
+ 316              		.loc 1 73 0
+ 317 01ec 40F20003 		movw	r3, #:lower16:current_process
+ 318 01f0 C0F20003 		movt	r3, #:upper16:current_process
+ 319 01f4 1B68     		ldr	r3, [r3, #0]
+ 320 01f6 03F10102 		add	r2, r3, #1
+ 321 01fa 40F20003 		movw	r3, #:lower16:current_process
+ 322 01fe C0F20003 		movt	r3, #:upper16:current_process
+ 323 0202 1A60     		str	r2, [r3, #0]
+  74:../src/interrupt_defs.cpp **** 		if(process_list[current_process].delayMS > 0)
+ 324              		.loc 1 74 0
+ 325 0204 40F20003 		movw	r3, #:lower16:current_process
+ 326 0208 C0F20003 		movt	r3, #:upper16:current_process
+ 327 020c 1A68     		ldr	r2, [r3, #0]
+ 328 020e 40F20003 		movw	r3, #:lower16:process_list
+ 329 0212 C0F20003 		movt	r3, #:upper16:process_list
+ 330 0216 4FF09401 		mov	r1, #148
+ 331 021a 01FB02F2 		mul	r2, r1, r2
+ 332 021e 9B18     		adds	r3, r3, r2
+ 333 0220 03F19003 		add	r3, r3, #144
+ 334 0224 1B68     		ldr	r3, [r3, #0]
+ 335 0226 002B     		cmp	r3, #0
+ 336 0228 0BDD     		ble	.L9
+  75:../src/interrupt_defs.cpp **** 		{
+  76:../src/interrupt_defs.cpp **** 			++current_process;
+ 337              		.loc 1 76 0
+ 338 022a 40F20003 		movw	r3, #:lower16:current_process
+ 339 022e C0F20003 		movt	r3, #:upper16:current_process
+ 340 0232 1B68     		ldr	r3, [r3, #0]
+ 341 0234 03F10102 		add	r2, r3, #1
+ 342 0238 40F20003 		movw	r3, #:lower16:current_process
+ 343 023c C0F20003 		movt	r3, #:upper16:current_process
+ 344 0240 1A60     		str	r2, [r3, #0]
+ 345              	.L9:
+  77:../src/interrupt_defs.cpp **** 		}
+  78:../src/interrupt_defs.cpp **** 		if(current_process >= num_processes_active)
+ 346              		.loc 1 78 0
+ 347 0242 40F20003 		movw	r3, #:lower16:current_process
+ 348 0246 C0F20003 		movt	r3, #:upper16:current_process
+ 349 024a 1A68     		ldr	r2, [r3, #0]
+ 350 024c 40F20003 		movw	r3, #:lower16:num_processes_active
+ 351 0250 C0F20003 		movt	r3, #:upper16:num_processes_active
+ 352 0254 1B68     		ldr	r3, [r3, #0]
+ 353 0256 9A42     		cmp	r2, r3
+ 354 0258 06DB     		blt	.L10
+  79:../src/interrupt_defs.cpp **** 		{
+  80:../src/interrupt_defs.cpp **** 			current_process = 0;
+ 355              		.loc 1 80 0
+ 356 025a 40F20003 		movw	r3, #:lower16:current_process
+ 357 025e C0F20003 		movt	r3, #:upper16:current_process
+ 358 0262 4FF00002 		mov	r2, #0
+ 359 0266 1A60     		str	r2, [r3, #0]
+ 360              	.L10:
+  81:../src/interrupt_defs.cpp **** 		}
+  82:../src/interrupt_defs.cpp **** 
+  83:../src/interrupt_defs.cpp **** 		addrVal = (uint32_t)(process_list[current_process].taskPointer);//0x8001841;
+ 361              		.loc 1 83 0
+ 362 0268 40F20003 		movw	r3, #:lower16:current_process
+ 363 026c C0F20003 		movt	r3, #:upper16:current_process
+ 364 0270 1A68     		ldr	r2, [r3, #0]
+ 365 0272 40F20003 		movw	r3, #:lower16:process_list
+ 366 0276 C0F20003 		movt	r3, #:upper16:process_list
+ 367 027a 4FF09401 		mov	r1, #148
+ 368 027e 01FB02F2 		mul	r2, r1, r2
+ 369 0282 9B18     		adds	r3, r3, r2
+ 370 0284 03F10403 		add	r3, r3, #4
+ 371 0288 1B68     		ldr	r3, [r3, #0]
+ 372 028a 1A46     		mov	r2, r3
+ 373 028c 40F20003 		movw	r3, #:lower16:addrVal
+ 374 0290 C0F20003 		movt	r3, #:upper16:addrVal
+ 375 0294 1A60     		str	r2, [r3, #0]
+  84:../src/interrupt_defs.cpp **** 		active_task = current_process;
+ 376              		.loc 1 84 0
+ 377 0296 40F20003 		movw	r3, #:lower16:current_process
+ 378 029a C0F20003 		movt	r3, #:upper16:current_process
+ 379 029e 1A68     		ldr	r2, [r3, #0]
+ 380 02a0 40F20003 		movw	r3, #:lower16:active_task
+ 381 02a4 C0F20003 		movt	r3, #:upper16:active_task
+ 382 02a8 1A60     		str	r2, [r3, #0]
+ 383              	.LBB9:
+ 384              	.LBB10:
+ 385              		.loc 2 317 0
+ 386              	@ 317 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cmFunc.h" 1
+ 387 02aa 62B6     		cpsie i
+ 388              	@ 0 "" 2
+ 389              		.thumb
+ 390              	.LBE10:
+ 391              	.LBE9:
+  85:../src/interrupt_defs.cpp **** 		__enable_irq();
+  86:../src/interrupt_defs.cpp **** 		asm volatile ("bx %[num]\n\t" : [num] "+r" ((unsigned)addrVal));
+ 392              		.loc 1 86 0
+ 393 02ac 40F20003 		movw	r3, #:lower16:addrVal
+ 394 02b0 C0F20003 		movt	r3, #:upper16:addrVal
+ 395 02b4 1B68     		ldr	r3, [r3, #0]
+ 396 02b6 1A46     		mov	r2, r3
+ 397              	@ 86 "../src/interrupt_defs.cpp" 1
+ 398 02b8 1047     		bx r2
+ 399              		
+ 400              	@ 0 "" 2
+ 401              		.thumb
+ 402 02ba 40F20003 		movw	r3, #:lower16:addrVal
+ 403 02be C0F20003 		movt	r3, #:upper16:addrVal
+ 404 02c2 1A60     		str	r2, [r3, #0]
+  87:../src/interrupt_defs.cpp **** 	}
+ 405              		.loc 1 87 0
+ 406 02c4 BD46     		mov	sp, r7
+ 407 02c6 80BC     		pop	{r7}
+ 408 02c8 7047     		bx	lr
+ 409              		.cfi_endproc
+ 410              	.LFE114:
+ 412 02ca 00BF     		.align	2
+ 413              		.global	HardFault_Handler
+ 414              		.thumb
+ 415              		.thumb_func
+ 417              	HardFault_Handler:
+ 418              	.LFB115:
+  88:../src/interrupt_defs.cpp **** 
+  89:../src/interrupt_defs.cpp **** 	// Primarily for debug purposes:
+  90:../src/interrupt_defs.cpp **** 
+  91:../src/interrupt_defs.cpp **** 	void HardFault_Handler(void)
+  92:../src/interrupt_defs.cpp **** 	{
+ 419              		.loc 1 92 0
+ 420              		.cfi_startproc
+ 421              		@ args = 0, pretend = 0, frame = 0
+ 422              		@ frame_needed = 1, uses_anonymous_args = 0
+ 423              		@ link register save eliminated.
+ 424 02cc 80B4     		push	{r7}
+ 425              	.LCFI9:
+ 426              		.cfi_def_cfa_offset 4
+ 427              		.cfi_offset 7, -4
+ 428 02ce 00AF     		add	r7, sp, #0
+ 429              	.LCFI10:
+ 430              		.cfi_def_cfa_register 7
+ 431              	.L12:
+  93:../src/interrupt_defs.cpp **** 		while(1);
+ 432              		.loc 1 93 0 discriminator 1
+ 433 02d0 FEE7     		b	.L12
+ 434              		.cfi_endproc
+ 435              	.LFE115:
+ 437 02d2 00BF     		.align	2
+ 438              		.global	MemManage_Handler
+ 439              		.thumb
+ 440              		.thumb_func
+ 442              	MemManage_Handler:
+ 443              	.LFB116:
+  94:../src/interrupt_defs.cpp **** 	}
+  95:../src/interrupt_defs.cpp **** 	void MemManage_Handler(void)
+  96:../src/interrupt_defs.cpp **** 	{
+ 444              		.loc 1 96 0
+ 445              		.cfi_startproc
+ 446              		@ args = 0, pretend = 0, frame = 0
+ 447              		@ frame_needed = 1, uses_anonymous_args = 0
+ 448              		@ link register save eliminated.
+ 449 02d4 80B4     		push	{r7}
+ 450              	.LCFI11:
+ 451              		.cfi_def_cfa_offset 4
+ 452              		.cfi_offset 7, -4
+ 453 02d6 00AF     		add	r7, sp, #0
+ 454              	.LCFI12:
+ 455              		.cfi_def_cfa_register 7
+ 456              	.L14:
+  97:../src/interrupt_defs.cpp **** 		while(1);
+ 457              		.loc 1 97 0 discriminator 1
+ 458 02d8 FEE7     		b	.L14
+ 459              		.cfi_endproc
+ 460              	.LFE116:
+ 462 02da 00BF     		.align	2
+ 463              		.global	BusFault_Handler
+ 464              		.thumb
+ 465              		.thumb_func
+ 467              	BusFault_Handler:
+ 468              	.LFB117:
+  98:../src/interrupt_defs.cpp **** 	}
+  99:../src/interrupt_defs.cpp **** 	void BusFault_Handler(void)
+ 100:../src/interrupt_defs.cpp **** 	{
+ 469              		.loc 1 100 0
+ 470              		.cfi_startproc
+ 471              		@ args = 0, pretend = 0, frame = 0
+ 472              		@ frame_needed = 1, uses_anonymous_args = 0
+ 473              		@ link register save eliminated.
+ 474 02dc 80B4     		push	{r7}
+ 475              	.LCFI13:
+ 476              		.cfi_def_cfa_offset 4
+ 477              		.cfi_offset 7, -4
+ 478 02de 00AF     		add	r7, sp, #0
+ 479              	.LCFI14:
+ 480              		.cfi_def_cfa_register 7
+ 481              	.L16:
+ 101:../src/interrupt_defs.cpp **** 		while(1);
+ 482              		.loc 1 101 0 discriminator 1
+ 483 02e0 FEE7     		b	.L16
+ 484              		.cfi_endproc
+ 485              	.LFE117:
+ 487 02e2 00BF     		.align	2
+ 488              		.global	UsageFault_Handler
+ 489              		.thumb
+ 490              		.thumb_func
+ 492              	UsageFault_Handler:
+ 493              	.LFB118:
+ 102:../src/interrupt_defs.cpp **** 	}
+ 103:../src/interrupt_defs.cpp **** 	void UsageFault_Handler(void)
+ 104:../src/interrupt_defs.cpp **** 	{
+ 494              		.loc 1 104 0
+ 495              		.cfi_startproc
+ 496              		@ args = 0, pretend = 0, frame = 0
+ 497              		@ frame_needed = 1, uses_anonymous_args = 0
+ 498              		@ link register save eliminated.
+ 499 02e4 80B4     		push	{r7}
+ 500              	.LCFI15:
+ 501              		.cfi_def_cfa_offset 4
+ 502              		.cfi_offset 7, -4
+ 503 02e6 00AF     		add	r7, sp, #0
+ 504              	.LCFI16:
+ 505              		.cfi_def_cfa_register 7
+ 506              	.L18:
+ 105:../src/interrupt_defs.cpp **** 		while(1);
+ 507              		.loc 1 105 0 discriminator 1
+ 508 02e8 FEE7     		b	.L18
+ 509              		.cfi_endproc
+ 510              	.LFE118:
+ 512              	.Letext0:
+ 513              		.file 3 "/home/aghosh01/gcc-arm-none-eabi-4_7-2012q4/bin/../lib/gcc/arm-none-eabi/4.7.3/../../../.
+ 514              		.file 4 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cm4.h"
+ 515              		.file 5 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x.h"
+ 516              		.file 6 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 interrupt_defs.cpp
-     /tmp/ccGHSI2t.s:20     .bss:00000000 $d
-     /tmp/ccGHSI2t.s:21     .bss:00000000 _ZL5stack
-     /tmp/ccGHSI2t.s:24     .text:00000000 $t
-     /tmp/ccGHSI2t.s:29     .text:00000000 SVC_Handler
-     /tmp/ccGHSI2t.s:106    .text:0000007c PendSV_Handler
-     /tmp/ccGHSI2t.s:145    .text:000000a0 SysTick_Handler
-     /tmp/ccGHSI2t.s:221    .text:0000011c HardFault_Handler
-     /tmp/ccGHSI2t.s:246    .text:00000124 MemManage_Handler
-     /tmp/ccGHSI2t.s:271    .text:0000012c BusFault_Handler
-     /tmp/ccGHSI2t.s:296    .text:00000134 UsageFault_Handler
+     /tmp/cc25iTml.s:20     .bss:00000000 $d
+     /tmp/cc25iTml.s:21     .bss:00000000 _ZL5stack
+     /tmp/cc25iTml.s:24     .text:00000000 $t
+     /tmp/cc25iTml.s:29     .text:00000000 TIM1_TRG_COM_TIM17_IRQHandler
+     /tmp/cc25iTml.s:145    .text:000000e8 SVC_Handler
+     /tmp/cc25iTml.s:224    .text:0000016c PendSV_Handler
+     /tmp/cc25iTml.s:302    .text:000001e8 SysTick_Handler
+     /tmp/cc25iTml.s:417    .text:000002cc HardFault_Handler
+     /tmp/cc25iTml.s:442    .text:000002d4 MemManage_Handler
+     /tmp/cc25iTml.s:467    .text:000002dc BusFault_Handler
+     /tmp/cc25iTml.s:492    .text:000002e4 UsageFault_Handler
                      .debug_frame:00000010 $d
                            .group:00000000 wm4.1.934603b1d669cb2b32fd4cb6dd11b673
                            .group:00000000 wm4.common_headers.h.9.a77b7af68303fe0609f9dd844a078e2a
@@ -424,9 +967,13 @@ DEFINED SYMBOLS
                            .group:00000000 wm4.stm32f30x_usart.h.110.c89016273702821ff4f9fe43881f70b5
                            .group:00000000 wm4.stm32f30x_wwdg.h.58.4688eee61a2709866472b4b4c07d9275
                            .group:00000000 wm4.stm32f30x_misc.h.113.6a52e4fe7c3825a3ab05990f30dddf92
-                           .group:00000000 wm4.os.h.15.d9d7ebdab8b493dfd5254a413227d1d3
+                           .group:00000000 wm4.os.h.15.44a78ef46e18cf800f9dd49ef066829c
 
 UNDEFINED SYMBOLS
-current_process
+TIM_ClearITPendingBit
 process_list
+nextProc
+num_processes_active
+current_process
 addrVal
+active_task

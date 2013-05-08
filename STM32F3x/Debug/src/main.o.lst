@@ -43,39 +43,51 @@
   49              		.global	process_list
   50              		.align	2
   53              	process_list:
-  54 000c 00000000 		.space	296
+  54 000c 00000000 		.space	1480
   54      00000000 
   54      00000000 
   54      00000000 
   54      00000000 
-  55              		.global	pList
+  55              		.global	num_processes_active
   56              		.align	2
-  59              	pList:
-  60 0134 00000000 		.space	148
-  60      00000000 
-  60      00000000 
-  60      00000000 
-  60      00000000 
-  61              		.global	task1_iter
+  59              	num_processes_active:
+  60 05d4 00000000 		.space	4
+  61              		.global	active_task
   62              		.align	2
-  65              	task1_iter:
-  66 01c8 00000000 		.space	4
-  67              		.global	task2_iter
+  65              	active_task:
+  66 05d8 00000000 		.space	4
+  67              		.global	nextProc
   68              		.align	2
-  71              	task2_iter:
-  72 01cc 00000000 		.space	4
-  73              		.global	addrVal
+  71              	nextProc:
+  72 05dc 00000000 		.space	4
+  73              		.global	task1_iter
   74              		.align	2
-  77              	addrVal:
-  78 01d0 00000000 		.space	4
-  79              		.text
+  77              	task1_iter:
+  78 05e0 00000000 		.space	4
+  79              		.global	task2_iter
   80              		.align	2
-  81              		.global	_Z5task1v
-  82              		.thumb
-  83              		.thumb_func
-  85              	_Z5task1v:
-  86              	.LFB111:
-  87              		.file 1 "../src/main.cpp"
+  83              	task2_iter:
+  84 05e4 00000000 		.space	4
+  85              		.global	task3_iter
+  86              		.align	2
+  89              	task3_iter:
+  90 05e8 00000000 		.space	4
+  91              		.global	pc
+  92              		.align	2
+  95              	pc:
+  96 05ec 00000000 		.space	4
+  97              		.global	addrVal
+  98              		.align	2
+ 101              	addrVal:
+ 102 05f0 00000000 		.space	4
+ 103              		.text
+ 104              		.align	2
+ 105              		.global	_Z5task1v
+ 106              		.thumb
+ 107              		.thumb_func
+ 109              	_Z5task1v:
+ 110              	.LFB111:
+ 111              		.file 1 "../src/main.cpp"
    1:../src/main.cpp **** #include "stm32f30x_adc.h"
    2:../src/main.cpp **** #include "stm32f30x_gpio.h"
    3:../src/main.cpp **** #include "stm32f30x_dma.h"
@@ -144,193 +156,580 @@
   66:../src/main.cpp **** volatile int led_matrix[7] = {GPIO_Pin_9, GPIO_Pin_8, GPIO_Pin_15, GPIO_Pin_13,
   67:../src/main.cpp **** 										GPIO_Pin_12, GPIO_Pin_11, GPIO_Pin_10};
   68:../src/main.cpp **** 
-  69:../src/main.cpp **** // Initialize all encoder data structures to zero:
-  70:../src/main.cpp **** 
-  71:../src/main.cpp **** int current_process;
-  72:../src/main.cpp **** process_block process_list[MAX_NUM_PROCESSES];
-  73:../src/main.cpp **** process_block pList;
+  69:../src/main.cpp **** int current_process;
+  70:../src/main.cpp **** process_block process_list[MAX_NUM_PROCESSES];
+  71:../src/main.cpp **** int num_processes_active, active_task, nextProc;
+  72:../src/main.cpp **** 
+  73:../src/main.cpp **** int task1_iter, task2_iter, task3_iter, pc;
   74:../src/main.cpp **** 
-  75:../src/main.cpp **** int task1_iter, task2_iter;
+  75:../src/main.cpp **** uint32_t addrVal;
   76:../src/main.cpp **** 
-  77:../src/main.cpp **** uint32_t addrVal;
-  78:../src/main.cpp **** 
-  79:../src/main.cpp **** void task1(void)
-  80:../src/main.cpp **** {
-  88              		.loc 1 80 0
-  89              		.cfi_startproc
-  90              		@ args = 0, pretend = 0, frame = 0
-  91              		@ frame_needed = 1, uses_anonymous_args = 0
-  92              		@ link register save eliminated.
-  93 0000 80B4     		push	{r7}
-  94              	.LCFI0:
-  95              		.cfi_def_cfa_offset 4
-  96              		.cfi_offset 7, -4
-  97 0002 00AF     		add	r7, sp, #0
-  98              	.LCFI1:
-  99              		.cfi_def_cfa_register 7
- 100              	.L2:
-  81:../src/main.cpp **** 	while(1)
-  82:../src/main.cpp **** 	{
-  83:../src/main.cpp **** 		++task1_iter;
- 101              		.loc 1 83 0 discriminator 1
- 102 0004 40F20003 		movw	r3, #:lower16:task1_iter
- 103 0008 C0F20003 		movt	r3, #:upper16:task1_iter
- 104 000c 1B68     		ldr	r3, [r3, #0]
- 105 000e 03F10102 		add	r2, r3, #1
- 106 0012 40F20003 		movw	r3, #:lower16:task1_iter
- 107 0016 C0F20003 		movt	r3, #:upper16:task1_iter
- 108 001a 1A60     		str	r2, [r3, #0]
-  84:../src/main.cpp **** 		yield_time();
- 109              		.loc 1 84 0 discriminator 1
- 110              	@ 84 "../src/main.cpp" 1
- 111 001c FFF7FEBF 		b SysTick_Handler
- 112              		
- 113              	@ 0 "" 2
-  81:../src/main.cpp **** 	while(1)
- 114              		.loc 1 81 0 discriminator 1
- 115              		.thumb
- 116 0020 F0E7     		b	.L2
- 117              		.cfi_endproc
- 118              	.LFE111:
- 120 0022 00BF     		.align	2
- 121              		.global	_Z5task2v
- 122              		.thumb
- 123              		.thumb_func
- 125              	_Z5task2v:
- 126              	.LFB112:
-  85:../src/main.cpp **** 	}
-  86:../src/main.cpp **** }
-  87:../src/main.cpp **** 
-  88:../src/main.cpp **** void task2(void)
-  89:../src/main.cpp **** {
- 127              		.loc 1 89 0
- 128              		.cfi_startproc
- 129              		@ args = 0, pretend = 0, frame = 0
- 130              		@ frame_needed = 1, uses_anonymous_args = 0
- 131              		@ link register save eliminated.
- 132 0024 80B4     		push	{r7}
- 133              	.LCFI2:
- 134              		.cfi_def_cfa_offset 4
- 135              		.cfi_offset 7, -4
- 136 0026 00AF     		add	r7, sp, #0
- 137              	.LCFI3:
- 138              		.cfi_def_cfa_register 7
- 139              	.L4:
-  90:../src/main.cpp **** 	while(1)
-  91:../src/main.cpp **** 	{
-  92:../src/main.cpp **** 		++task2_iter;
- 140              		.loc 1 92 0 discriminator 1
- 141 0028 40F20003 		movw	r3, #:lower16:task2_iter
- 142 002c C0F20003 		movt	r3, #:upper16:task2_iter
- 143 0030 1B68     		ldr	r3, [r3, #0]
- 144 0032 03F10102 		add	r2, r3, #1
- 145 0036 40F20003 		movw	r3, #:lower16:task2_iter
- 146 003a C0F20003 		movt	r3, #:upper16:task2_iter
- 147 003e 1A60     		str	r2, [r3, #0]
-  93:../src/main.cpp **** 		yield_time();
- 148              		.loc 1 93 0 discriminator 1
- 149              	@ 93 "../src/main.cpp" 1
- 150 0040 FFF7FEBF 		b SysTick_Handler
- 151              		
- 152              	@ 0 "" 2
-  90:../src/main.cpp **** 	while(1)
- 153              		.loc 1 90 0 discriminator 1
- 154              		.thumb
- 155 0044 F0E7     		b	.L4
- 156              		.cfi_endproc
- 157              	.LFE112:
- 159 0046 00BF     		.align	2
- 160              		.global	main
- 161              		.thumb
- 162              		.thumb_func
- 164              	main:
- 165              	.LFB113:
-  94:../src/main.cpp **** 	}
-  95:../src/main.cpp **** }
-  96:../src/main.cpp **** 
-  97:../src/main.cpp **** int main(void)
-  98:../src/main.cpp **** {
- 166              		.loc 1 98 0
- 167              		.cfi_startproc
- 168              		@ args = 0, pretend = 0, frame = 0
- 169              		@ frame_needed = 1, uses_anonymous_args = 0
- 170 0048 80B5     		push	{r7, lr}
- 171              	.LCFI4:
- 172              		.cfi_def_cfa_offset 8
- 173              		.cfi_offset 7, -8
- 174              		.cfi_offset 14, -4
- 175 004a 00AF     		add	r7, sp, #0
- 176              	.LCFI5:
- 177              		.cfi_def_cfa_register 7
-  99:../src/main.cpp **** 	SystemInit(); // Set up clocks/PLL/et. al
- 178              		.loc 1 99 0
- 179 004c FFF7FEFF 		bl	SystemInit
- 100:../src/main.cpp **** 
- 101:../src/main.cpp **** 	UART1_init(); // Debug bridge
- 180              		.loc 1 101 0
- 181 0050 FFF7FEFF 		bl	_Z10UART1_initv
- 102:../src/main.cpp **** 
- 103:../src/main.cpp **** 	task1_iter = 0;
- 182              		.loc 1 103 0
- 183 0054 40F20003 		movw	r3, #:lower16:task1_iter
- 184 0058 C0F20003 		movt	r3, #:upper16:task1_iter
- 185 005c 4FF00002 		mov	r2, #0
- 186 0060 1A60     		str	r2, [r3, #0]
- 104:../src/main.cpp **** 	task2_iter = 0;
- 187              		.loc 1 104 0
- 188 0062 40F20003 		movw	r3, #:lower16:task2_iter
- 189 0066 C0F20003 		movt	r3, #:upper16:task2_iter
- 190 006a 4FF00002 		mov	r2, #0
- 191 006e 1A60     		str	r2, [r3, #0]
- 105:../src/main.cpp **** 
- 106:../src/main.cpp **** 	process_list[0].taskPointer = task1;
- 192              		.loc 1 106 0
- 193 0070 40F20003 		movw	r3, #:lower16:process_list
- 194 0074 C0F20003 		movt	r3, #:upper16:process_list
- 195 0078 40F20002 		movw	r2, #:lower16:_Z5task1v
- 196 007c C0F20002 		movt	r2, #:upper16:_Z5task1v
- 197 0080 5A60     		str	r2, [r3, #4]
- 107:../src/main.cpp **** 	process_list[1].taskPointer = task2;
- 198              		.loc 1 107 0
- 199 0082 40F20003 		movw	r3, #:lower16:process_list
- 200 0086 C0F20003 		movt	r3, #:upper16:process_list
- 201 008a 40F20002 		movw	r2, #:lower16:_Z5task2v
- 202 008e C0F20002 		movt	r2, #:upper16:_Z5task2v
- 203 0092 C3F89820 		str	r2, [r3, #152]
- 108:../src/main.cpp **** 
- 109:../src/main.cpp **** 	OS_init(&pList);
- 204              		.loc 1 109 0
- 205 0096 40F20000 		movw	r0, #:lower16:pList
- 206 009a C0F20000 		movt	r0, #:upper16:pList
- 207 009e FFF7FEFF 		bl	_Z7OS_initP13process_block
- 208              	.L6:
- 110:../src/main.cpp **** 
- 111:../src/main.cpp **** 	while(true);
- 209              		.loc 1 111 0 discriminator 1
- 210 00a2 FEE7     		b	.L6
- 211              		.cfi_endproc
- 212              	.LFE113:
- 214              	.Letext0:
- 215              		.file 2 "/home/aghosh01/gcc-arm-none-eabi-4_7-2012q4/bin/../lib/gcc/arm-none-eabi/4.7.3/../../../.
- 216              		.file 3 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h"
- 217              		.file 4 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cm4.h"
+  77:../src/main.cpp **** void task1(void)
+  78:../src/main.cpp **** {
+ 112              		.loc 1 78 0
+ 113              		.cfi_startproc
+ 114              		@ args = 0, pretend = 0, frame = 0
+ 115              		@ frame_needed = 1, uses_anonymous_args = 0
+ 116 0000 80B5     		push	{r7, lr}
+ 117              	.LCFI0:
+ 118              		.cfi_def_cfa_offset 8
+ 119              		.cfi_offset 7, -8
+ 120              		.cfi_offset 14, -4
+ 121 0002 00AF     		add	r7, sp, #0
+ 122              	.LCFI1:
+ 123              		.cfi_def_cfa_register 7
+ 124              	.L4:
+  79:../src/main.cpp **** 	while(1)
+  80:../src/main.cpp **** 	{
+  81:../src/main.cpp **** 		GPIO_WriteBit(GPIOE, GPIO_Pin_8, Bit_SET);
+ 125              		.loc 1 81 0
+ 126 0004 4FF48050 		mov	r0, #4096
+ 127 0008 C4F60000 		movt	r0, 18432
+ 128 000c 4FF48071 		mov	r1, #256
+ 129 0010 4FF00102 		mov	r2, #1
+ 130 0014 FFF7FEFF 		bl	GPIO_WriteBit
+  82:../src/main.cpp **** 		while(task1_iter < 1000000)
+ 131              		.loc 1 82 0
+ 132 0018 0BE0     		b	.L2
+ 133              	.L3:
+  83:../src/main.cpp **** 		{
+  84:../src/main.cpp **** 			++task1_iter;
+ 134              		.loc 1 84 0
+ 135 001a 40F20003 		movw	r3, #:lower16:task1_iter
+ 136 001e C0F20003 		movt	r3, #:upper16:task1_iter
+ 137 0022 1B68     		ldr	r3, [r3, #0]
+ 138 0024 03F10102 		add	r2, r3, #1
+ 139 0028 40F20003 		movw	r3, #:lower16:task1_iter
+ 140 002c C0F20003 		movt	r3, #:upper16:task1_iter
+ 141 0030 1A60     		str	r2, [r3, #0]
+ 142              	.L2:
+  82:../src/main.cpp **** 		while(task1_iter < 1000000)
+ 143              		.loc 1 82 0 discriminator 1
+ 144 0032 40F20003 		movw	r3, #:lower16:task1_iter
+ 145 0036 C0F20003 		movt	r3, #:upper16:task1_iter
+ 146 003a 1A68     		ldr	r2, [r3, #0]
+ 147 003c 44F23F23 		movw	r3, #16959
+ 148 0040 C0F20F03 		movt	r3, 15
+ 149 0044 9A42     		cmp	r2, r3
+ 150 0046 CCBF     		ite	gt
+ 151 0048 0023     		movgt	r3, #0
+ 152 004a 0123     		movle	r3, #1
+ 153 004c DBB2     		uxtb	r3, r3
+ 154 004e 002B     		cmp	r3, #0
+ 155 0050 E3D1     		bne	.L3
+  85:../src/main.cpp **** 		}
+  86:../src/main.cpp **** 		task1_iter = 0;
+ 156              		.loc 1 86 0
+ 157 0052 40F20003 		movw	r3, #:lower16:task1_iter
+ 158 0056 C0F20003 		movt	r3, #:upper16:task1_iter
+ 159 005a 4FF00002 		mov	r2, #0
+ 160 005e 1A60     		str	r2, [r3, #0]
+  87:../src/main.cpp **** 		GPIO_WriteBit(GPIOE, GPIO_Pin_8, Bit_RESET);
+ 161              		.loc 1 87 0
+ 162 0060 4FF48050 		mov	r0, #4096
+ 163 0064 C4F60000 		movt	r0, 18432
+ 164 0068 4FF48071 		mov	r1, #256
+ 165 006c 4FF00002 		mov	r2, #0
+ 166 0070 FFF7FEFF 		bl	GPIO_WriteBit
+  88:../src/main.cpp **** 		yield_time();
+ 167              		.loc 1 88 0
+ 168              	@ 88 "../src/main.cpp" 1
+ 169 0074 FFF7FEBF 		b SysTick_Handler
+ 170              		
+ 171              	@ 0 "" 2
+  79:../src/main.cpp **** 	while(1)
+ 172              		.loc 1 79 0
+ 173              		.thumb
+ 174 0078 C4E7     		b	.L4
+ 175              		.cfi_endproc
+ 176              	.LFE111:
+ 178 007a 00BF     		.align	2
+ 179              		.global	_Z5task2v
+ 180              		.thumb
+ 181              		.thumb_func
+ 183              	_Z5task2v:
+ 184              	.LFB112:
+  89:../src/main.cpp **** 	}
+  90:../src/main.cpp **** }
+  91:../src/main.cpp **** 
+  92:../src/main.cpp **** void task2(void)
+  93:../src/main.cpp **** {
+ 185              		.loc 1 93 0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 1, uses_anonymous_args = 0
+ 189 007c 80B5     		push	{r7, lr}
+ 190              	.LCFI2:
+ 191              		.cfi_def_cfa_offset 8
+ 192              		.cfi_offset 7, -8
+ 193              		.cfi_offset 14, -4
+ 194 007e 00AF     		add	r7, sp, #0
+ 195              	.LCFI3:
+ 196              		.cfi_def_cfa_register 7
+ 197              	.L8:
+  94:../src/main.cpp **** 	while(1)
+  95:../src/main.cpp **** 	{
+  96:../src/main.cpp **** 		GPIO_WriteBit(GPIOE, GPIO_Pin_9, Bit_SET);
+ 198              		.loc 1 96 0
+ 199 0080 4FF48050 		mov	r0, #4096
+ 200 0084 C4F60000 		movt	r0, 18432
+ 201 0088 4FF40071 		mov	r1, #512
+ 202 008c 4FF00102 		mov	r2, #1
+ 203 0090 FFF7FEFF 		bl	GPIO_WriteBit
+  97:../src/main.cpp **** 		while(task2_iter < 1000000)
+ 204              		.loc 1 97 0
+ 205 0094 0BE0     		b	.L6
+ 206              	.L7:
+  98:../src/main.cpp **** 		{
+  99:../src/main.cpp **** 			++task2_iter;
+ 207              		.loc 1 99 0
+ 208 0096 40F20003 		movw	r3, #:lower16:task2_iter
+ 209 009a C0F20003 		movt	r3, #:upper16:task2_iter
+ 210 009e 1B68     		ldr	r3, [r3, #0]
+ 211 00a0 03F10102 		add	r2, r3, #1
+ 212 00a4 40F20003 		movw	r3, #:lower16:task2_iter
+ 213 00a8 C0F20003 		movt	r3, #:upper16:task2_iter
+ 214 00ac 1A60     		str	r2, [r3, #0]
+ 215              	.L6:
+  97:../src/main.cpp **** 		while(task2_iter < 1000000)
+ 216              		.loc 1 97 0 discriminator 1
+ 217 00ae 40F20003 		movw	r3, #:lower16:task2_iter
+ 218 00b2 C0F20003 		movt	r3, #:upper16:task2_iter
+ 219 00b6 1A68     		ldr	r2, [r3, #0]
+ 220 00b8 44F23F23 		movw	r3, #16959
+ 221 00bc C0F20F03 		movt	r3, 15
+ 222 00c0 9A42     		cmp	r2, r3
+ 223 00c2 CCBF     		ite	gt
+ 224 00c4 0023     		movgt	r3, #0
+ 225 00c6 0123     		movle	r3, #1
+ 226 00c8 DBB2     		uxtb	r3, r3
+ 227 00ca 002B     		cmp	r3, #0
+ 228 00cc E3D1     		bne	.L7
+ 100:../src/main.cpp **** 		}
+ 101:../src/main.cpp **** 		task2_iter = 0;
+ 229              		.loc 1 101 0
+ 230 00ce 40F20003 		movw	r3, #:lower16:task2_iter
+ 231 00d2 C0F20003 		movt	r3, #:upper16:task2_iter
+ 232 00d6 4FF00002 		mov	r2, #0
+ 233 00da 1A60     		str	r2, [r3, #0]
+ 102:../src/main.cpp **** 		GPIO_WriteBit(GPIOE, GPIO_Pin_9, Bit_RESET);
+ 234              		.loc 1 102 0
+ 235 00dc 4FF48050 		mov	r0, #4096
+ 236 00e0 C4F60000 		movt	r0, 18432
+ 237 00e4 4FF40071 		mov	r1, #512
+ 238 00e8 4FF00002 		mov	r2, #0
+ 239 00ec FFF7FEFF 		bl	GPIO_WriteBit
+ 103:../src/main.cpp **** 		yield_time();
+ 240              		.loc 1 103 0
+ 241              	@ 103 "../src/main.cpp" 1
+ 242 00f0 FFF7FEBF 		b SysTick_Handler
+ 243              		
+ 244              	@ 0 "" 2
+  94:../src/main.cpp **** 	while(1)
+ 245              		.loc 1 94 0
+ 246              		.thumb
+ 247 00f4 C4E7     		b	.L8
+ 248              		.cfi_endproc
+ 249              	.LFE112:
+ 251 00f6 00BF     		.align	2
+ 252              		.global	_Z5task3v
+ 253              		.thumb
+ 254              		.thumb_func
+ 256              	_Z5task3v:
+ 257              	.LFB113:
+ 104:../src/main.cpp **** 	}
+ 105:../src/main.cpp **** }
+ 106:../src/main.cpp **** 
+ 107:../src/main.cpp **** void task3(void)
+ 108:../src/main.cpp **** {
+ 258              		.loc 1 108 0
+ 259              		.cfi_startproc
+ 260              		@ args = 0, pretend = 0, frame = 0
+ 261              		@ frame_needed = 1, uses_anonymous_args = 0
+ 262 00f8 80B5     		push	{r7, lr}
+ 263              	.LCFI4:
+ 264              		.cfi_def_cfa_offset 8
+ 265              		.cfi_offset 7, -8
+ 266              		.cfi_offset 14, -4
+ 267 00fa 00AF     		add	r7, sp, #0
+ 268              	.LCFI5:
+ 269              		.cfi_def_cfa_register 7
+ 270              	.L12:
+ 109:../src/main.cpp **** 	while(1)
+ 110:../src/main.cpp **** 	{
+ 111:../src/main.cpp **** 		GPIO_WriteBit(GPIOE, GPIO_Pin_15, Bit_SET);
+ 271              		.loc 1 111 0
+ 272 00fc 4FF48050 		mov	r0, #4096
+ 273 0100 C4F60000 		movt	r0, 18432
+ 274 0104 4FF40041 		mov	r1, #32768
+ 275 0108 4FF00102 		mov	r2, #1
+ 276 010c FFF7FEFF 		bl	GPIO_WriteBit
+ 112:../src/main.cpp **** 		while(task3_iter < 1000000)
+ 277              		.loc 1 112 0
+ 278 0110 0BE0     		b	.L10
+ 279              	.L11:
+ 113:../src/main.cpp **** 		{
+ 114:../src/main.cpp **** 			++task3_iter;
+ 280              		.loc 1 114 0
+ 281 0112 40F20003 		movw	r3, #:lower16:task3_iter
+ 282 0116 C0F20003 		movt	r3, #:upper16:task3_iter
+ 283 011a 1B68     		ldr	r3, [r3, #0]
+ 284 011c 03F10102 		add	r2, r3, #1
+ 285 0120 40F20003 		movw	r3, #:lower16:task3_iter
+ 286 0124 C0F20003 		movt	r3, #:upper16:task3_iter
+ 287 0128 1A60     		str	r2, [r3, #0]
+ 288              	.L10:
+ 112:../src/main.cpp **** 		while(task3_iter < 1000000)
+ 289              		.loc 1 112 0 discriminator 1
+ 290 012a 40F20003 		movw	r3, #:lower16:task3_iter
+ 291 012e C0F20003 		movt	r3, #:upper16:task3_iter
+ 292 0132 1A68     		ldr	r2, [r3, #0]
+ 293 0134 44F23F23 		movw	r3, #16959
+ 294 0138 C0F20F03 		movt	r3, 15
+ 295 013c 9A42     		cmp	r2, r3
+ 296 013e CCBF     		ite	gt
+ 297 0140 0023     		movgt	r3, #0
+ 298 0142 0123     		movle	r3, #1
+ 299 0144 DBB2     		uxtb	r3, r3
+ 300 0146 002B     		cmp	r3, #0
+ 301 0148 E3D1     		bne	.L11
+ 115:../src/main.cpp **** 		}
+ 116:../src/main.cpp **** 		task3_iter = 0;
+ 302              		.loc 1 116 0
+ 303 014a 40F20003 		movw	r3, #:lower16:task3_iter
+ 304 014e C0F20003 		movt	r3, #:upper16:task3_iter
+ 305 0152 4FF00002 		mov	r2, #0
+ 306 0156 1A60     		str	r2, [r3, #0]
+ 117:../src/main.cpp **** //		asm volatile ("mov %[outval], PC" : [outval] "=r" (process_list[active_task].process_pc));
+ 118:../src/main.cpp **** //		process_list[active_task].process_pc += sizeof(os_delay_ms);
+ 119:../src/main.cpp **** //		os_delay_ms(200);
+ 120:../src/main.cpp **** //		while(task3_iter < 1000)
+ 121:../src/main.cpp **** //		{
+ 122:../src/main.cpp **** //			++task3_iter;
+ 123:../src/main.cpp **** //		}
+ 124:../src/main.cpp **** //		task3_iter = 0;
+ 125:../src/main.cpp **** 		GPIO_WriteBit(GPIOE, GPIO_Pin_15, Bit_RESET);
+ 307              		.loc 1 125 0
+ 308 0158 4FF48050 		mov	r0, #4096
+ 309 015c C4F60000 		movt	r0, 18432
+ 310 0160 4FF40041 		mov	r1, #32768
+ 311 0164 4FF00002 		mov	r2, #0
+ 312 0168 FFF7FEFF 		bl	GPIO_WriteBit
+ 126:../src/main.cpp **** 		yield_time();
+ 313              		.loc 1 126 0
+ 314              	@ 126 "../src/main.cpp" 1
+ 315 016c FFF7FEBF 		b SysTick_Handler
+ 316              		
+ 317              	@ 0 "" 2
+ 109:../src/main.cpp **** 	while(1)
+ 318              		.loc 1 109 0
+ 319              		.thumb
+ 320 0170 C4E7     		b	.L12
+ 321              		.cfi_endproc
+ 322              	.LFE113:
+ 324 0172 00BF     		.align	2
+ 325              		.global	main
+ 326              		.thumb
+ 327              		.thumb_func
+ 329              	main:
+ 330              	.LFB114:
+ 127:../src/main.cpp **** 	}
+ 128:../src/main.cpp **** }
+ 129:../src/main.cpp **** 
+ 130:../src/main.cpp **** void GPIO_init(void);
+ 131:../src/main.cpp **** 
+ 132:../src/main.cpp **** int main(void)
+ 133:../src/main.cpp **** {
+ 331              		.loc 1 133 0
+ 332              		.cfi_startproc
+ 333              		@ args = 0, pretend = 0, frame = 0
+ 334              		@ frame_needed = 1, uses_anonymous_args = 0
+ 335 0174 80B5     		push	{r7, lr}
+ 336              	.LCFI6:
+ 337              		.cfi_def_cfa_offset 8
+ 338              		.cfi_offset 7, -8
+ 339              		.cfi_offset 14, -4
+ 340 0176 00AF     		add	r7, sp, #0
+ 341              	.LCFI7:
+ 342              		.cfi_def_cfa_register 7
+ 134:../src/main.cpp **** 	SystemInit(); // Set up clocks/PLL/et. al
+ 343              		.loc 1 134 0
+ 344 0178 FFF7FEFF 		bl	SystemInit
+ 135:../src/main.cpp **** 
+ 136:../src/main.cpp **** 	UART1_init(); // Debug bridge
+ 345              		.loc 1 136 0
+ 346 017c FFF7FEFF 		bl	_Z10UART1_initv
+ 137:../src/main.cpp **** 	GPIO_init();
+ 347              		.loc 1 137 0
+ 348 0180 FFF7FEFF 		bl	_Z9GPIO_initv
+ 138:../src/main.cpp **** 
+ 139:../src/main.cpp **** 	task1_iter = 0;
+ 349              		.loc 1 139 0
+ 350 0184 40F20003 		movw	r3, #:lower16:task1_iter
+ 351 0188 C0F20003 		movt	r3, #:upper16:task1_iter
+ 352 018c 4FF00002 		mov	r2, #0
+ 353 0190 1A60     		str	r2, [r3, #0]
+ 140:../src/main.cpp **** 	task2_iter = 0;
+ 354              		.loc 1 140 0
+ 355 0192 40F20003 		movw	r3, #:lower16:task2_iter
+ 356 0196 C0F20003 		movt	r3, #:upper16:task2_iter
+ 357 019a 4FF00002 		mov	r2, #0
+ 358 019e 1A60     		str	r2, [r3, #0]
+ 141:../src/main.cpp **** 
+ 142:../src/main.cpp **** //	process_list[0].taskPointer = task1;
+ 143:../src/main.cpp **** //	process_list[1].taskPointer = task2;
+ 144:../src/main.cpp **** 
+ 145:../src/main.cpp **** 	OS_init();
+ 359              		.loc 1 145 0
+ 360 01a0 FFF7FEFF 		bl	_Z7OS_initv
+ 146:../src/main.cpp **** 	create_task(task1);
+ 361              		.loc 1 146 0
+ 362 01a4 40F20000 		movw	r0, #:lower16:_Z5task1v
+ 363 01a8 C0F20000 		movt	r0, #:upper16:_Z5task1v
+ 364 01ac FFF7FEFF 		bl	_Z11create_taskPFPvS_E
+ 147:../src/main.cpp **** 	create_task(task2);
+ 365              		.loc 1 147 0
+ 366 01b0 40F20000 		movw	r0, #:lower16:_Z5task2v
+ 367 01b4 C0F20000 		movt	r0, #:upper16:_Z5task2v
+ 368 01b8 FFF7FEFF 		bl	_Z11create_taskPFPvS_E
+ 148:../src/main.cpp **** 	create_task(task3);
+ 369              		.loc 1 148 0
+ 370 01bc 40F20000 		movw	r0, #:lower16:_Z5task3v
+ 371 01c0 C0F20000 		movt	r0, #:upper16:_Z5task3v
+ 372 01c4 FFF7FEFF 		bl	_Z11create_taskPFPvS_E
+ 149:../src/main.cpp **** 
+ 150:../src/main.cpp **** 	yield_time(); // Kick us into the first task
+ 373              		.loc 1 150 0
+ 374              	@ 150 "../src/main.cpp" 1
+ 375 01c8 FFF7FEBF 		b SysTick_Handler
+ 376              		
+ 377              	@ 0 "" 2
+ 378              		.thumb
+ 379              	.L14:
+ 151:../src/main.cpp **** 
+ 152:../src/main.cpp **** 	while(true);
+ 380              		.loc 1 152 0 discriminator 1
+ 381 01cc FEE7     		b	.L14
+ 382              		.cfi_endproc
+ 383              	.LFE114:
+ 385 01ce 00BF     		.align	2
+ 386              		.global	_Z19timer_tick_ISR_initv
+ 387              		.thumb
+ 388              		.thumb_func
+ 390              	_Z19timer_tick_ISR_initv:
+ 391              	.LFB115:
+ 153:../src/main.cpp **** 
+ 154:../src/main.cpp **** 	return 0; // We should never manage to get here...
+ 155:../src/main.cpp **** }
+ 156:../src/main.cpp **** 
+ 157:../src/main.cpp **** void timer_tick_ISR_init(void)
+ 158:../src/main.cpp **** {
+ 392              		.loc 1 158 0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 16
+ 395              		@ frame_needed = 1, uses_anonymous_args = 0
+ 396 01d0 80B5     		push	{r7, lr}
+ 397              	.LCFI8:
+ 398              		.cfi_def_cfa_offset 8
+ 399              		.cfi_offset 7, -8
+ 400              		.cfi_offset 14, -4
+ 401 01d2 84B0     		sub	sp, sp, #16
+ 402              	.LCFI9:
+ 403              		.cfi_def_cfa_offset 24
+ 404 01d4 00AF     		add	r7, sp, #0
+ 405              	.LCFI10:
+ 406              		.cfi_def_cfa_register 7
+ 407              	.LBB2:
+ 159:../src/main.cpp **** 	NVIC_InitTypeDef nv;
+ 160:../src/main.cpp **** 	TIM_TimeBaseInitTypeDef TIM17_init;
+ 161:../src/main.cpp **** 
+ 162:../src/main.cpp **** 	nv.NVIC_IRQChannel = TIM1_TRG_COM_TIM17_IRQn;
+ 408              		.loc 1 162 0
+ 409 01d6 4FF01A03 		mov	r3, #26
+ 410 01da 3B73     		strb	r3, [r7, #12]
+ 163:../src/main.cpp **** 	nv.NVIC_IRQChannelPreemptionPriority = 0;
+ 411              		.loc 1 163 0
+ 412 01dc 4FF00003 		mov	r3, #0
+ 413 01e0 7B73     		strb	r3, [r7, #13]
+ 164:../src/main.cpp **** 	nv.NVIC_IRQChannelSubPriority = 0;
+ 414              		.loc 1 164 0
+ 415 01e2 4FF00003 		mov	r3, #0
+ 416 01e6 BB73     		strb	r3, [r7, #14]
+ 165:../src/main.cpp **** 	nv.NVIC_IRQChannelCmd = ENABLE;
+ 417              		.loc 1 165 0
+ 418 01e8 4FF00103 		mov	r3, #1
+ 419 01ec FB73     		strb	r3, [r7, #15]
+ 166:../src/main.cpp **** 
+ 167:../src/main.cpp **** 	NVIC_Init(&nv);
+ 420              		.loc 1 167 0
+ 421 01ee 07F10C03 		add	r3, r7, #12
+ 422 01f2 1846     		mov	r0, r3
+ 423 01f4 FFF7FEFF 		bl	NVIC_Init
+ 168:../src/main.cpp **** 
+ 169:../src/main.cpp **** 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM17, ENABLE);
+ 424              		.loc 1 169 0
+ 425 01f8 4FF48020 		mov	r0, #262144
+ 426 01fc 4FF00101 		mov	r1, #1
+ 427 0200 FFF7FEFF 		bl	RCC_APB2PeriphClockCmd
+ 170:../src/main.cpp **** 
+ 171:../src/main.cpp **** 	/*
+ 172:../src/main.cpp **** 	 * UPDATE_FREQUENCY = TIM_CLK/[(PRESCALER+1)(ARR+1)(REPCOUNTER+1)]
+ 173:../src/main.cpp **** 	 * 	  Prescaler -> PRESCALER
+ 174:../src/main.cpp **** 	 * 	  Period -> ARR
+ 175:../src/main.cpp **** 	 * 	  RepetitionCounter -> REPCOUNTER
+ 176:../src/main.cpp **** 	 */
+ 177:../src/main.cpp **** 
+ 178:../src/main.cpp **** 	TIM17_init.TIM_Period = (10*DT_OS_TICK)-1;
+ 428              		.loc 1 178 0
+ 429 0204 4FF00903 		mov	r3, #9
+ 430 0208 7B60     		str	r3, [r7, #4]
+ 179:../src/main.cpp **** 	TIM17_init.TIM_Prescaler = 7199;
+ 431              		.loc 1 179 0
+ 432 020a 41F61F43 		movw	r3, #7199
+ 433 020e 3B80     		strh	r3, [r7, #0]	@ movhi
+ 180:../src/main.cpp **** 	TIM17_init.TIM_RepetitionCounter = 0;
+ 434              		.loc 1 180 0
+ 435 0210 4FF00003 		mov	r3, #0
+ 436 0214 BB72     		strb	r3, [r7, #10]
+ 181:../src/main.cpp **** 	TIM17_init.TIM_ClockDivision = 0;
+ 437              		.loc 1 181 0
+ 438 0216 4FF00003 		mov	r3, #0
+ 439 021a 3B81     		strh	r3, [r7, #8]	@ movhi
+ 182:../src/main.cpp **** 	TIM17_init.TIM_CounterMode = TIM_CounterMode_Up;
+ 440              		.loc 1 182 0
+ 441 021c 4FF00003 		mov	r3, #0
+ 442 0220 7B80     		strh	r3, [r7, #2]	@ movhi
+ 183:../src/main.cpp **** 
+ 184:../src/main.cpp **** 	TIM_TimeBaseInit(TIM17, &TIM17_init);
+ 443              		.loc 1 184 0
+ 444 0222 3B46     		mov	r3, r7
+ 445 0224 4FF49040 		mov	r0, #18432
+ 446 0228 C4F20100 		movt	r0, 16385
+ 447 022c 1946     		mov	r1, r3
+ 448 022e FFF7FEFF 		bl	TIM_TimeBaseInit
+ 185:../src/main.cpp **** 
+ 186:../src/main.cpp **** 	TIM_ITConfig(TIM17, TIM_IT_Update, ENABLE);
+ 449              		.loc 1 186 0
+ 450 0232 4FF49040 		mov	r0, #18432
+ 451 0236 C4F20100 		movt	r0, 16385
+ 452 023a 4FF00101 		mov	r1, #1
+ 453 023e 4FF00102 		mov	r2, #1
+ 454 0242 FFF7FEFF 		bl	TIM_ITConfig
+ 187:../src/main.cpp **** 	TIM_Cmd(TIM17, ENABLE);
+ 455              		.loc 1 187 0
+ 456 0246 4FF49040 		mov	r0, #18432
+ 457 024a C4F20100 		movt	r0, 16385
+ 458 024e 4FF00101 		mov	r1, #1
+ 459 0252 FFF7FEFF 		bl	TIM_Cmd
+ 460              	.LBE2:
+ 188:../src/main.cpp **** }
+ 461              		.loc 1 188 0
+ 462 0256 07F11007 		add	r7, r7, #16
+ 463 025a BD46     		mov	sp, r7
+ 464 025c 80BD     		pop	{r7, pc}
+ 465              		.cfi_endproc
+ 466              	.LFE115:
+ 468 025e 00BF     		.align	2
+ 469              		.global	_Z9GPIO_initv
+ 470              		.thumb
+ 471              		.thumb_func
+ 473              	_Z9GPIO_initv:
+ 474              	.LFB116:
+ 189:../src/main.cpp **** 
+ 190:../src/main.cpp **** void GPIO_init(void)
+ 191:../src/main.cpp **** {
+ 475              		.loc 1 191 0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 8
+ 478              		@ frame_needed = 1, uses_anonymous_args = 0
+ 479 0260 80B5     		push	{r7, lr}
+ 480              	.LCFI11:
+ 481              		.cfi_def_cfa_offset 8
+ 482              		.cfi_offset 7, -8
+ 483              		.cfi_offset 14, -4
+ 484 0262 82B0     		sub	sp, sp, #8
+ 485              	.LCFI12:
+ 486              		.cfi_def_cfa_offset 16
+ 487 0264 00AF     		add	r7, sp, #0
+ 488              	.LCFI13:
+ 489              		.cfi_def_cfa_register 7
+ 490              	.LBB3:
+ 192:../src/main.cpp **** 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOE, ENABLE);
+ 491              		.loc 1 192 0
+ 492 0266 4FF40010 		mov	r0, #2097152
+ 493 026a 4FF00101 		mov	r1, #1
+ 494 026e FFF7FEFF 		bl	RCC_AHBPeriphClockCmd
+ 193:../src/main.cpp **** 
+ 194:../src/main.cpp **** 	GPIO_InitTypeDef a;
+ 195:../src/main.cpp **** 
+ 196:../src/main.cpp **** 	a.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPI
+ 495              		.loc 1 196 0
+ 496 0272 4FF43F43 		mov	r3, #48896
+ 497 0276 3B60     		str	r3, [r7, #0]
+ 197:../src/main.cpp **** 	a.GPIO_Mode = GPIO_Mode_OUT;
+ 498              		.loc 1 197 0
+ 499 0278 4FF00103 		mov	r3, #1
+ 500 027c 3B71     		strb	r3, [r7, #4]
+ 198:../src/main.cpp **** 	a.GPIO_PuPd = GPIO_PuPd_NOPULL;
+ 501              		.loc 1 198 0
+ 502 027e 4FF00003 		mov	r3, #0
+ 503 0282 FB71     		strb	r3, [r7, #7]
+ 199:../src/main.cpp **** 	a.GPIO_OType = GPIO_OType_PP;
+ 504              		.loc 1 199 0
+ 505 0284 4FF00003 		mov	r3, #0
+ 506 0288 BB71     		strb	r3, [r7, #6]
+ 200:../src/main.cpp **** 	a.GPIO_Speed = GPIO_Speed_Level_2;
+ 507              		.loc 1 200 0
+ 508 028a 4FF00203 		mov	r3, #2
+ 509 028e 7B71     		strb	r3, [r7, #5]
+ 201:../src/main.cpp **** 
+ 202:../src/main.cpp **** 	GPIO_Init(GPIOE, &a);
+ 510              		.loc 1 202 0
+ 511 0290 3B46     		mov	r3, r7
+ 512 0292 4FF48050 		mov	r0, #4096
+ 513 0296 C4F60000 		movt	r0, 18432
+ 514 029a 1946     		mov	r1, r3
+ 515 029c FFF7FEFF 		bl	GPIO_Init
+ 516              	.LBE3:
+ 203:../src/main.cpp **** }
+ 517              		.loc 1 203 0
+ 518 02a0 07F10807 		add	r7, r7, #8
+ 519 02a4 BD46     		mov	sp, r7
+ 520 02a6 80BD     		pop	{r7, pc}
+ 521              		.cfi_endproc
+ 522              	.LFE116:
+ 524              	.Letext0:
+ 525              		.file 2 "/home/aghosh01/gcc-arm-none-eabi-4_7-2012q4/bin/../lib/gcc/arm-none-eabi/4.7.3/../../../.
+ 526              		.file 3 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x.h"
+ 527              		.file 4 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_gpio.h"
+ 528              		.file 5 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_tim.h"
+ 529              		.file 6 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_misc.h"
+ 530              		.file 7 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h"
+ 531              		.file 8 "/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/core_cm4.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 main.cpp
-     /tmp/ccJWJlY7.s:20     .bss:00000000 $d
-     /tmp/ccJWJlY7.s:21     .bss:00000000 _ZL5stack
-     /tmp/ccJWJlY7.s:27     .bss:00000004 led_iter
-     /tmp/ccJWJlY7.s:34     .data:00000000 led_matrix
-     /tmp/ccJWJlY7.s:31     .data:00000000 $d
-     /tmp/ccJWJlY7.s:47     .bss:00000008 current_process
-     /tmp/ccJWJlY7.s:53     .bss:0000000c process_list
-     /tmp/ccJWJlY7.s:59     .bss:00000134 pList
-     /tmp/ccJWJlY7.s:65     .bss:000001c8 task1_iter
-     /tmp/ccJWJlY7.s:71     .bss:000001cc task2_iter
-     /tmp/ccJWJlY7.s:77     .bss:000001d0 addrVal
-     /tmp/ccJWJlY7.s:80     .text:00000000 $t
-     /tmp/ccJWJlY7.s:85     .text:00000000 _Z5task1v
-     /tmp/ccJWJlY7.s:125    .text:00000024 _Z5task2v
-     /tmp/ccJWJlY7.s:164    .text:00000048 main
+     /tmp/ccWLp1ce.s:20     .bss:00000000 $d
+     /tmp/ccWLp1ce.s:21     .bss:00000000 _ZL5stack
+     /tmp/ccWLp1ce.s:27     .bss:00000004 led_iter
+     /tmp/ccWLp1ce.s:34     .data:00000000 led_matrix
+     /tmp/ccWLp1ce.s:31     .data:00000000 $d
+     /tmp/ccWLp1ce.s:47     .bss:00000008 current_process
+     /tmp/ccWLp1ce.s:53     .bss:0000000c process_list
+     /tmp/ccWLp1ce.s:59     .bss:000005d4 num_processes_active
+     /tmp/ccWLp1ce.s:65     .bss:000005d8 active_task
+     /tmp/ccWLp1ce.s:71     .bss:000005dc nextProc
+     /tmp/ccWLp1ce.s:77     .bss:000005e0 task1_iter
+     /tmp/ccWLp1ce.s:83     .bss:000005e4 task2_iter
+     /tmp/ccWLp1ce.s:89     .bss:000005e8 task3_iter
+     /tmp/ccWLp1ce.s:95     .bss:000005ec pc
+     /tmp/ccWLp1ce.s:101    .bss:000005f0 addrVal
+     /tmp/ccWLp1ce.s:104    .text:00000000 $t
+     /tmp/ccWLp1ce.s:109    .text:00000000 _Z5task1v
+     /tmp/ccWLp1ce.s:183    .text:0000007c _Z5task2v
+     /tmp/ccWLp1ce.s:256    .text:000000f8 _Z5task3v
+     /tmp/ccWLp1ce.s:329    .text:00000174 main
+     /tmp/ccWLp1ce.s:473    .text:00000260 _Z9GPIO_initv
+     /tmp/ccWLp1ce.s:390    .text:000001d0 _Z19timer_tick_ISR_initv
                      .debug_frame:00000010 $d
                            .group:00000000 wm4.1.934603b1d669cb2b32fd4cb6dd11b673
                            .group:00000000 wm4.stm32f30x.h.56.6f19c65e98e3319a61449cb2b2455af5
@@ -364,7 +763,7 @@ DEFINED SYMBOLS
                            .group:00000000 wm4.stm32f30x_adc.h.130.cbebad91f78fb87381fe0860eea6104e
                            .group:00000000 wm4.stm32f3_discovery_l3gd20.h.98.ce6c56e3c59772d76fdcff14d2dcb612
                            .group:00000000 wm4.common_headers.h.9.a77b7af68303fe0609f9dd844a078e2a
-                           .group:00000000 wm4.os.h.15.d9d7ebdab8b493dfd5254a413227d1d3
+                           .group:00000000 wm4.os.h.15.44a78ef46e18cf800f9dd49ef066829c
                            .group:00000000 wm4.newlib.h.8.a9901dc52d1357e3e94003403d43f8b5
                            .group:00000000 wm4.config.h.193.5fb8ef056cdff92dec3dee9552839d8c
                            .group:00000000 wm4._ansi.h.23.fa6206289f154965d075fc01e2867808
@@ -386,7 +785,16 @@ DEFINED SYMBOLS
                            .group:00000000 wm4.stdio.h.63.dfdea6580b080784d08faace69b6ed76
 
 UNDEFINED SYMBOLS
+GPIO_WriteBit
 SysTick_Handler
 SystemInit
 _Z10UART1_initv
-_Z7OS_initP13process_block
+_Z7OS_initv
+_Z11create_taskPFPvS_E
+NVIC_Init
+RCC_APB2PeriphClockCmd
+TIM_TimeBaseInit
+TIM_ITConfig
+TIM_Cmd
+RCC_AHBPeriphClockCmd
+GPIO_Init
