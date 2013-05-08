@@ -36,11 +36,7 @@ src/interrupt_defs.d: ../src/interrupt_defs.cpp \
  /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_misc.h \
  /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_tim.h \
  /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_usart.h \
- /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h \
- /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f3_discovery_l3gd20.h \
- /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/Robot/encoder.h \
- /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/Robot/common_headers.h \
- /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/Robot/pwm.h
+ /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h
 
 /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/Robot/common_headers.h:
 
@@ -117,11 +113,3 @@ src/interrupt_defs.d: ../src/interrupt_defs.cpp \
 /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f30x_usart.h:
 
 /home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/os.h:
-
-/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/stm32f3_discovery_l3gd20.h:
-
-/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/Robot/encoder.h:
-
-/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/Robot/common_headers.h:
-
-/home/aghosh01/git/CS6233_FinalProject/STM32F3x/inc/Robot/pwm.h:
